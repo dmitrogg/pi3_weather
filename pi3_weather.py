@@ -3,6 +3,7 @@
 import urllib.request
 # import pigpio
 # import DHT22
+# http://abyz.me.uk/rpi/pigpio/examples.html#Python%20code
 import random
 from tkinter import *
 from time import time
