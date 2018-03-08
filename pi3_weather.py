@@ -3,7 +3,6 @@
 import urllib.request
 # import pigpio
 # import DHT22
-# http://abyz.me.uk/rpi/pigpio/examples.html#Python%20code
 import random
 from tkinter import *
 from time import time
@@ -11,9 +10,12 @@ from PIL import Image, ImageTk
 from datetime import datetime
 
 root = Tk()
+# pi = pigpio.pi()
+# dht22 = DHT22.sensor(pi, 22)
+# dht22.trigger()
 
 x = 0.25
-x2 = 1 - x
+x2 = 0.98 - x
 font = "Josefin Sans Light"
 font2 = "Forum"
 font3 = "Abel"
@@ -22,13 +24,13 @@ font3 = "Abel"
 webVarTemp = StringVar()
 webVarTemp.set('...')
 webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 110), foreground='white', background='black')
-webVarTempLabel.place(relx=x+0.025, rely=0.25, anchor=CENTER)
+webVarTempLabel.place(relx=x+0.025, rely=0.28, anchor=CENTER)
 
 #Sensor: Big Temperature label
 sensorVarTemp = StringVar()
 sensorVarTemp.set('...')
 sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 110), foreground='white', background='black')
-sensorVarTempLabel.place(relx=x2+0.025, rely=0.25, anchor=CENTER)
+sensorVarTempLabel.place(relx=x2+0.025, rely=0.28, anchor=CENTER)
 
 #Web: Short description label
 webVarTxt = StringVar()
@@ -62,10 +64,10 @@ imageLabelWeb = Label(root, image=image, background='black')
 imageLabelWeb.place(relx=x, rely=0.775, anchor=CENTER)
 
 #Sensor: Setup default image size and place image
-originalImage = Image.open('updating.png')
-resized = originalImage.resize((180, 180), Image.ANTIALIAS)
-image = ImageTk.PhotoImage(resized)
-imageLabelSensor = Label(root, image=image, background='black')
+originalImage2 = Image.open('updating.png')
+resized2 = originalImage.resize((180, 180), Image.ANTIALIAS)
+image2 = ImageTk.PhotoImage(resized2)
+imageLabelSensor = Label(root, image=image2, background='black')
 imageLabelSensor.place(relx=x2, rely=0.775, anchor=CENTER)
 
 # Update Web image
@@ -84,6 +86,8 @@ def changeImageSensor(newSensorImageString):
     imageLabelSensor.configure(image=image)
     imageLabelSensor.image = image
 
+def closeApp():
+    root.destroy()
 
 def getWebData():
 
@@ -126,20 +130,17 @@ def getWebData():
 
     # Include NEXT HOUR text if present
     if (snippetWebHour == ''):
-        webVarTempHC.set('Humidity:' + str('{:.1f}'.format(humidityWeb)) + '%   Celsius:' + str('{:.1f}'.format((temperatureWeb - 32)*(5/9)) + 'C'))
+        webVarTempHC.set(str('{:.1f}'.format(humidityWeb)) + '%   ' + str('{:.1f}'.format((temperatureWeb - 32)*(5/9)) + 'C'))
     else:
-        webVarTempHC.set('Humidity:' + str('{:.1f}'.format(humidityWeb)) + '%   Celsius:' + str('{:.1f}'.format((temperatureWeb - 32)*(5/9)) + 'C') + '\n' + str(snippetWebHour))
+        webVarTempHC.set(str('{:.1f}'.format(humidityWeb)) + '%   ' + str('{:.1f}'.format((temperatureWeb - 32)*(5/9)) + 'C') + '\n' + str(snippetWebHour))
 
     # Return temparature for picture change
     return(float(temperatureWeb))
 
 def getSensorData():
-    # run sudo pigpiod
-    # pi = pigpio.pi()
-    # dht22 = DHT22.sensor(pi, 22)
     # dht22.trigger()
-    # temperatureSensor = (dht22.temperature() * 1.8) + 32
-    # humiditySensor = dht22.humidity()
+    # temperatureSensor = float(dht22.temperature()) * 9/5 + 32
+    # humiditySensor = float(dht22.humidity())
 
     # Temp solution
     temperatureSensor = float('{:.1f}'.format(random.uniform(30, 105)))
@@ -153,7 +154,7 @@ def getSensorData():
 
     # Include NEXT HOUR text if present
     if (snippetSensorHour == ''):
-        sensorVarTempHC.set('Humidity:' + str('{:.1f}'.format(humiditySensor)) + '%   Celsius:' + str('{:.1f}'.format((temperatureSensor - 32)*(5/9)) + 'C'))
+        sensorVarTempHC.set(str('{:.1f}'.format(humiditySensor)) + '%    ' + str('{:.1f}'.format((temperatureSensor - 32)*(5/9)) + 'C'))
     else:
         sensorVarTempHC.set(str('{:.1f}'.format(humiditySensor)) + '%    ' + str('{:.1f}'.format((temperatureSensor - 32)*(5/9)) + 'C') + '\n' + str(snippetSensorHour))
 
@@ -180,19 +181,20 @@ def selectSensorImage():
     else:
         changeImageSensor('rustle.png')
 
-    root.after(60000, selectSensorImage)
+    root.after(10000, selectSensorImage)
 
 # Call procedures to update values
-root.after(100, getWebData)
-root.after(100, getSensorData)
-root.after(2000, selectWebImage)
-root.after(3000, selectSensorImage)
+root.after(2000, getWebData)
+root.after(2000, getSensorData)
+root.after(3000, selectWebImage)
+root.after(4000, selectSensorImage)
+root.after(15000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
 
 # Disable window controls
-# root.overrideredirect(1)
+#root.overrideredirect(1)
 
 # Set window parameters
 root.resizable(width=False, height=False)
@@ -200,3 +202,5 @@ root.geometry('{}x{}'.format(800, 480))
 root.configure(background='black')
 
 root.mainloop()
+
+
