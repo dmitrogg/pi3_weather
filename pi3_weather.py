@@ -1,8 +1,8 @@
 # Main file
 
 import urllib.request
-# import pigpio
-# import DHT22
+import pigpio
+import DHT22
 import random
 from tkinter import *
 from time import time
@@ -10,9 +10,9 @@ from PIL import Image, ImageTk
 from datetime import datetime
 
 root = Tk()
-# pi = pigpio.pi()
-# dht22 = DHT22.sensor(pi, 22)
-# dht22.trigger()
+pi = pigpio.pi()
+dht22 = DHT22.sensor(pi, 22)
+dht22.trigger()
 
 x = 0.25
 x2 = 0.98 - x
@@ -57,15 +57,15 @@ sensorVarTempHCLabel = Label(root, textvariable = sensorVarTempHC, font=(font3, 
 sensorVarTempHCLabel.place(relx=x2, rely=0.475, anchor=CENTER)
 
 #Web: Setup default image size and place image
-originalImage = Image.open('updating.png')
-resized = originalImage.resize((180, 180), Image.ANTIALIAS)
+originalImage = Image.open('derp.jpg')
+resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
 imageLabelWeb.place(relx=x, rely=0.775, anchor=CENTER)
 
 #Sensor: Setup default image size and place image
-originalImage2 = Image.open('updating.png')
-resized2 = originalImage.resize((180, 180), Image.ANTIALIAS)
+originalImage2 = Image.open('derp.jpg')
+resized2 = originalImage.resize((240, 180), Image.ANTIALIAS)
 image2 = ImageTk.PhotoImage(resized2)
 imageLabelSensor = Label(root, image=image2, background='black')
 imageLabelSensor.place(relx=x2, rely=0.775, anchor=CENTER)
@@ -73,7 +73,7 @@ imageLabelSensor.place(relx=x2, rely=0.775, anchor=CENTER)
 # Update Web image
 def changeImageWeb(newWebImageString):
     newImage = Image.open(newWebImageString)
-    newResizedImage = newImage.resize((180, 180), Image.ANTIALIAS)
+    newResizedImage = newImage.resize((240, 180), Image.ANTIALIAS)
     image = ImageTk.PhotoImage(newResizedImage)
     imageLabelWeb.configure(image=image)
     imageLabelWeb.image = image
@@ -81,7 +81,7 @@ def changeImageWeb(newWebImageString):
 # Update Sensor image
 def changeImageSensor(newSensorImageString):
     newImage = Image.open(newSensorImageString)
-    newResizedImage = newImage.resize((180, 180), Image.ANTIALIAS)
+    newResizedImage = newImage.resize((240, 180), Image.ANTIALIAS)
     image = ImageTk.PhotoImage(newResizedImage)
     imageLabelSensor.configure(image=image)
     imageLabelSensor.image = image
@@ -138,14 +138,14 @@ def getWebData():
     return(float(temperatureWeb))
 
 def getSensorData():
-    # dht22.trigger()
-    # temperatureSensor = float(dht22.temperature()) * 9/5 + 32
-    # humiditySensor = float(dht22.humidity())
+    dht22.trigger()
+    temperatureSensor = float(dht22.temperature()) * 9/5 + 32
+    humiditySensor = float(dht22.humidity())
 
     # Temp solution
-    temperatureSensor = float('{:.1f}'.format(random.uniform(30, 105)))
-    humiditySensor = float('{:.1f}'.format(random.uniform(1, 99)))
-    snippetSensorHour = 'Home will remain refrigirated.'
+    # temperatureSensor = float('{:.1f}'.format(random.uniform(30, 105)))
+    # humiditySensor = float('{:.1f}'.format(random.uniform(1, 99)))
+    snippetSensorHour = ''
 
     # Set all variables, simulated temperature
     sensorVarTxt.set('Inside: Nice')
@@ -165,10 +165,17 @@ def selectWebImage():
 
     temperatureWeb = getWebData()
 
-    if (temperatureWeb<80):
-        changeImageWeb('normal.png')
+    if (temperatureWeb>90):
+        changeImageWeb('mextroll.jpg')
+
+    elif (temperatureWeb<89 and temperatureWeb>70):
+        changeImageWeb('normal.jpg')
+
+    elif (temperatureWeb<69 and temperatureWeb>10):
+        changeImageWeb('rustle.jpg')
+
     else:
-        changeImageWeb('rustle.png')
+        changeImageWeb('derp.jpg')
 
     root.after(60000, selectWebImage)
 
@@ -176,10 +183,17 @@ def selectSensorImage():
 
     temperatureSensor = getSensorData()
 
-    if (temperatureSensor<80):
-        changeImageSensor('normal.png')
+    if (temperatureSensor>90):
+        changeImageSensor('mextroll.jpg')
+
+    elif (temperatureSensor<89 and temperatureSensor>70):
+        changeImageSensor('normal.jpg')
+
+    elif (temperatureSensor<69 and temperatureSensor>10):
+        changeImageSensor('rustle.jpg')
+
     else:
-        changeImageSensor('rustle.png')
+        changeImageSensor('derp.jpg')
 
     root.after(10000, selectSensorImage)
 
@@ -194,7 +208,7 @@ root.after(15000, closeApp)
 root.call('wm', 'attributes', '.', '-topmost', True)
 
 # Disable window controls
-#root.overrideredirect(1)
+root.overrideredirect(1)
 
 # Set window parameters
 root.resizable(width=False, height=False)
