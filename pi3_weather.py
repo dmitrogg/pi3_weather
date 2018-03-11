@@ -257,7 +257,7 @@ def LoopDescription():
         descTextVar.set('Pretty hot inside.')
 
     else:
-        descTextVar.set('Now: Sky is ' + str(extWebText))
+        descTextVar.set('Now: ' + str(extWebText))
 
     root.after(1000, LoopDescription)
 
