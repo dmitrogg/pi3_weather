@@ -117,7 +117,7 @@ def getWebData():
     start = extractedTextBlock.find('span class="next swap"') + 47
     end = extractedTextBlock.find('</span>') - 10
     snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
-    snippetWebCast = snippetWebCast[0:80]   # Only 80 characted fit into text box.
+    snippetWebCast = snippetWebCast[0:70] + '...'   # Only 80 characted fit into text box.
 
     # Set variables, and directly change labels
     webVarTemp.set(str('{:.1f}'.format(temperatureWeb)) + '˚')
@@ -287,5 +287,3 @@ root.configure(background='black')
 
 root.mainloop()
 
-
-  
