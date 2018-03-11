@@ -22,7 +22,7 @@ font3 = "Abel"
 
 # Draw a line
 canvas = Canvas(root, background = 'black', highlightthickness=0)
-canvas.create_line(150, 20, 150, 235, fill = '#7a7a7a') # 150 offset for Pi
+canvas.create_line(160, 20, 160, 235, fill = '#7a7a7a') # 150 offset for Pi
 canvas.pack()
 
 # Web: Big Temperature label
@@ -132,7 +132,7 @@ def getWebData():
     if (str(snippetWebHour) == ''):
         extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
     else:
-        extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast) + "\n" + str(snippetWebHour)
+        extWebText = str(snippetWebMini) + "\n" + str(snippetWebHour)
 
 
 
@@ -270,9 +270,9 @@ root.after(500, getWebData) #temp
 root.after(500, getSensorData) #temp
 root.after(1000, LoopImage)
 root.after(1000, LoopDescription)
-root.after(1500, LoopUpdateWebData)
+root.after(2000, LoopUpdateWebData)
 root.after(3000, LoopUpdateSnsData)
-# root.after(15000, closeApp)
+root.after(30000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
