@@ -22,20 +22,20 @@ font3 = "Abel"
 
 # Draw a line
 canvas = Canvas(root, background = 'black', highlightthickness=0)
-canvas.create_line(200, 20, 200, 235, fill = '#7a7a7a')
+canvas.create_line(150, 20, 150, 235, fill = '#7a7a7a') # 150 offset for Pi
 canvas.pack()
 
 # Web: Big Temperature label
 webVarTemp = StringVar()
 webVarTemp.set('')
 webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 115), foreground='white', background='black')
-webVarTempLabel.place(relx=x+0.025, rely=0.23, anchor=CENTER)
+webVarTempLabel.place(relx=x+0.025, rely=0.3, anchor=CENTER) # y at 0.3 for Pi
 
 # Sensor: Big Temperature label
 sensorVarTemp = StringVar()
 sensorVarTemp.set('')
 sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 115), foreground='white', background='black')
-sensorVarTempLabel.place(relx=x2+0.025, rely=0.23, anchor=CENTER)
+sensorVarTempLabel.place(relx=x2+0.025, rely=0.3, anchor=CENTER) # y at 0.3 for Pi
 
 # Top row label (Outside/Inside)
 Label(root, text = "- Outside -", font=(font3, 34), foreground='white', background='black').place(relx=x, rely=0.075, anchor=CENTER)
@@ -93,7 +93,7 @@ def getWebData():
     # Extract humidity from main block
     start = extractedTextBlock.find('"humidity"') + 13
     end = start + 2
-    humidityWeb = float(extractedTextBlock[start:end].replace(',', '0'))
+    humidityWeb = float(extractedTextBlock[start:end].replace(',', '0').replace('"p', '100')) # "p is for rare case of 100%
 
     # Extract Mini-Description text from main block
     start = extractedTextBlock.find('"summary":') + 11
@@ -166,10 +166,10 @@ def LoopUpdateSnsData():
 def getStatus():
 
     # Meme conditions
-    if (extWebTemp >= 69.0 or extSnsTemp >= 69.0):
+    if (extWebTemp == 69.0 or extSnsTemp == 69.0):
         outside = 'DatGeof'
 
-    if (extWebTemp >= 42.0 or extSnsTemp >= 42.0):
+    if (extWebTemp == 42.0 or extSnsTemp == 42.0):
         outside = 'Shrek'
 
     # Outside
@@ -266,15 +266,12 @@ def closeApp():
     root.destroy()
 
 # Call procedures to update values
-# root.after(500, getWebData) #temp
-# root.after(500, getSensorData) #temp
-root.after(500, LoopImage)
+root.after(500, getWebData) #temp
+root.after(500, getSensorData) #temp
+root.after(1000, LoopImage)
 root.after(1000, LoopDescription)
 root.after(1500, LoopUpdateWebData)
 root.after(3000, LoopUpdateSnsData)
-
-
-
 # root.after(15000, closeApp)
 
 # Set window "always on top"
