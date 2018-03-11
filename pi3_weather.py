@@ -229,7 +229,7 @@ def LoopImage():
         changeImage('/pi3_weather/rustle.jpg')     
 
     else:
-        changeImage('normal.jpg')
+        changeImage('/pi3_weather/normal.jpg')
 
     root.after(1000, LoopImage)
 
