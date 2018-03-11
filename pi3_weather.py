@@ -20,74 +20,60 @@ font = "Josefin Sans Light"
 font2 = "Forum"
 font3 = "Abel"
 
-#Web: Big Temperature label
+# Draw a line
+canvas = Canvas(root, background = 'black', highlightthickness=0)
+canvas.create_line(200, 20, 200, 235, fill = '#7a7a7a')
+canvas.pack()
+
+# Web: Big Temperature label
 webVarTemp = StringVar()
-webVarTemp.set('...')
-webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 110), foreground='white', background='black')
-webVarTempLabel.place(relx=x+0.025, rely=0.28, anchor=CENTER)
+webVarTemp.set('')
+webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 115), foreground='white', background='black')
+webVarTempLabel.place(relx=x+0.025, rely=0.23, anchor=CENTER)
 
-#Sensor: Big Temperature label
+# Sensor: Big Temperature label
 sensorVarTemp = StringVar()
-sensorVarTemp.set('...')
-sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 110), foreground='white', background='black')
-sensorVarTempLabel.place(relx=x2+0.025, rely=0.28, anchor=CENTER)
+sensorVarTemp.set('')
+sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 115), foreground='white', background='black')
+sensorVarTempLabel.place(relx=x2+0.025, rely=0.23, anchor=CENTER)
 
-#Web: Short description label
-webVarTxt = StringVar()
-webVarTxt.set('...')
-webVarTxtLabel = Label(root, textvariable = webVarTxt, font=(font2, 34), foreground='white', background='black')
-webVarTxtLabel.place(relx=x, rely=0.075, anchor=CENTER)
+# Top row label (Outside/Inside)
+Label(root, text = "- Outside -", font=(font3, 34), foreground='white', background='black').place(relx=x, rely=0.075, anchor=CENTER)
+Label(root, text = "- Inside -", font=(font3, 34), foreground='white', background='black').place(relx=x2, rely=0.075, anchor=CENTER)
 
-#Sensor: Short description label
-sensorVarTxt = StringVar()
-sensorVarTxt.set('...')
-sensorVarTxtLabel = Label(root, textvariable = sensorVarTxt, font=(font2, 34), foreground='white', background='black')
-sensorVarTxtLabel.place(relx=x2, rely=0.075, anchor=CENTER)
+# Web: Humidity label
+webVarHumi = StringVar()
+webVarHumi.set('Loading...')
+webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 25), foreground='white', background='black')
+webVarHumiLabel.place(relx=x, rely=0.47, anchor=CENTER)
 
-#Web: Humidity and Celcius label
-webVarTempHC = StringVar()
-webVarTempHC.set('...')
-webVarTempHCLabel = Label(root, textvariable = webVarTempHC, font=(font3, 20), foreground='white', background='black')
-webVarTempHCLabel.place(relx=x, rely=0.475, anchor=CENTER)
+# Sensor: Humidity label
+sensorVarHumi = StringVar()
+sensorVarHumi.set('Loading...')
+sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 25), foreground='white', background='black')
+sensorVarHumiLabel.place(relx=x2, rely=0.47, anchor=CENTER)
 
-#Sensor: Humidity and Celcius label
-sensorVarTempHC = StringVar()
-sensorVarTempHC.set('...')
-sensorVarTempHCLabel = Label(root, textvariable = sensorVarTempHC, font=(font3, 20), foreground='white', background='black')
-sensorVarTempHCLabel.place(relx=x2, rely=0.475, anchor=CENTER)
-
-#Web: Setup default image size and place image
+# Setup image size and place image
 originalImage = Image.open('derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
-imageLabelWeb.place(relx=x, rely=0.775, anchor=CENTER)
+imageLabelWeb.place(relx=x+0.125, rely=0.75, anchor=CENTER)
 
-#Sensor: Setup default image size and place image
-originalImage2 = Image.open('derp.jpg')
-resized2 = originalImage.resize((240, 180), Image.ANTIALIAS)
-image2 = ImageTk.PhotoImage(resized2)
-imageLabelSensor = Label(root, image=image2, background='black')
-imageLabelSensor.place(relx=x2, rely=0.775, anchor=CENTER)
+# Setup Description Box label
+descTextVar = StringVar()
+descTextVar.set('Loading...')
+descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=360, justify=LEFT)
+descTextVarLabel.place(relx=0.525, rely=0.75, anchor=W)
 
-# Update Web image
-def changeImageWeb(newWebImageString):
+
+# Update image
+def changeImage(newWebImageString):
     newImage = Image.open(newWebImageString)
     newResizedImage = newImage.resize((240, 180), Image.ANTIALIAS)
     image = ImageTk.PhotoImage(newResizedImage)
     imageLabelWeb.configure(image=image)
     imageLabelWeb.image = image
-
-# Update Sensor image
-def changeImageSensor(newSensorImageString):
-    newImage = Image.open(newSensorImageString)
-    newResizedImage = newImage.resize((240, 180), Image.ANTIALIAS)
-    image = ImageTk.PhotoImage(newResizedImage)
-    imageLabelSensor.configure(image=image)
-    imageLabelSensor.image = image
-
-def closeApp():
-    root.destroy()
 
 def getWebData():
 
@@ -109,12 +95,12 @@ def getWebData():
     end = start + 2
     humidityWeb = float(extractedTextBlock[start:end].replace(',', '0'))
 
-    # Extract mini-title from main block
+    # Extract Mini-Description text from main block
     start = extractedTextBlock.find('"summary":') + 11
     end = extractedTextBlock.find(',"icon":') - 1
     snippetWebMini = extractedTextBlock[start:end]
 
-    # Extract text snippet for NEXT HOUR
+    # Extract Next Hour text snippet
     start = webTextCode.find('<strong class="swiap">')
     end = start + 150
     extractedTextBlock = webTextCode[start:end]
@@ -123,86 +109,173 @@ def getWebData():
     end = extractedTextBlock.find('</span>')
     snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ')
 
-    # Set all variables
-    webVarTxt.set('Outside: ' + str(snippetWebMini))
-    
+    # Extract Forecast text snippet 
+    start = webTextCode.find('span class="next swap"')
+    end = start + 150
+    extractedTextBlock = webTextCode[start:end]
+
+    start = extractedTextBlock.find('span class="next swap"') + 47
+    end = extractedTextBlock.find('</span>') - 10
+    snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
+    snippetWebCast = snippetWebCast[0:80]   # Only 80 characted fit into text box.
+
+    # Set variables, and directly change labels
     webVarTemp.set(str('{:.1f}'.format(temperatureWeb)) + '˚')
+    
+    webVarHumi.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
 
-    # Include NEXT HOUR text if present
-    if (snippetWebHour == ''):
-        webVarTempHC.set(str('{:.1f}'.format(humidityWeb)) + '%   ' + str('{:.1f}'.format((temperatureWeb - 32)*(5/9)) + 'C'))
+    # Set global variables
+    global extWebTemp
+    extWebTemp = float('{:.1f}'.format(temperatureWeb))
+
+    global extWebText
+    if (str(snippetWebHour) == ''):
+        extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
     else:
-        webVarTempHC.set(str('{:.1f}'.format(humidityWeb)) + '%   ' + str('{:.1f}'.format((temperatureWeb - 32)*(5/9)) + 'C') + '\n' + str(snippetWebHour))
+        extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast) + "\n" + str(snippetWebHour)
 
-    # Return temparature for picture change
-    return(float(temperatureWeb))
+
 
 def getSensorData():
     dht22.trigger()
     temperatureSensor = float(dht22.temperature()) * 9/5 + 32
     humiditySensor = float(dht22.humidity())
 
-    # Temp solution
-    # temperatureSensor = float('{:.1f}'.format(random.uniform(30, 105)))
+    # Testing solution
+    # temperatureSensor = float('{:.1f}'.format(random.uniform(68, 77)))
     # humiditySensor = float('{:.1f}'.format(random.uniform(1, 99)))
-    snippetSensorHour = ''
 
-    # Set all variables, simulated temperature
-    sensorVarTxt.set('Inside: Nice')
-
+    # Set variables, and directly change labels
     sensorVarTemp.set(str('{:.1f}'.format(temperatureSensor)) + '˚')
+   
+    sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(humiditySensor)) + '%')
 
-    # Include NEXT HOUR text if present
-    if (snippetSensorHour == ''):
-        sensorVarTempHC.set(str('{:.1f}'.format(humiditySensor)) + '%    ' + str('{:.1f}'.format((temperatureSensor - 32)*(5/9)) + 'C'))
+    # Set global variables
+    global extSnsTemp
+    extSnsTemp = float('{:.1f}'.format(temperatureSensor))
+
+def LoopUpdateWebData():
+    getWebData()
+    randomTime = 60000 + (int(random.uniform(0, 60)) * 1000)
+    root.after(randomTime, LoopUpdateWebData)
+
+def LoopUpdateSnsData():
+    getSensorData()
+    root.after(5000, LoopUpdateSnsData)
+
+def getStatus():
+
+    # Meme conditions
+    if (extWebTemp >= 69.0 or extSnsTemp >= 69.0):
+        outside = 'DatGeof'
+
+    if (extWebTemp >= 42.0 or extSnsTemp >= 42.0):
+        outside = 'Shrek'
+
+    # Outside
+    if (extWebTemp >= 100.0):
+        outside = 'Lava'  
+
+    elif (extWebTemp >= 85.0 and extWebTemp <= 99.9):
+        outside = 'Hot'  
+
+    elif (extWebTemp >= 45.0 and extWebTemp <= 84.9):
+        outside = 'Normal'  
+
+    elif (extWebTemp >= 15.0 and extWebTemp <= 44.9):
+        outside = 'Cold'
+    
+    elif (extWebTemp <= 15.1):
+        outside = 'Arctic'  
+
+    # Inside
+    if (extSnsTemp >= 85.0):
+        inside = 'Lava'  
+
+    elif (extSnsTemp >= 75.0 and extSnsTemp <= 84.9):
+        inside = 'Hot'  
+
+    elif (extSnsTemp >= 71.0 and extSnsTemp <= 74.9):
+        inside = 'Normal'  
+
+    elif (extSnsTemp >= 65.0 and extSnsTemp <= 70.9):
+        inside = 'Cold'
+    
+    elif (extSnsTemp <= 64.9):
+        inside = 'Arctic'  
+
+    return(inside, outside)
+
+def LoopImage():
+
+    inside, outside = getStatus()
+
+    if (inside == 'DatGeof' or outside == 'DatGeof'):
+        changeImage('rustle.jpg')
+
+    elif (inside == 'Shrek' or outside == 'Shrek'):
+        changeImage('rustle.jpg')   
+
+    if (inside == 'Lava' or outside == 'Lava'):
+        changeImage('mextroll.jpg')
+
+    elif (inside == 'Arctic' or outside == 'Arctic'):
+        changeImage('rustle.jpg')   
+    
+    elif (inside == 'Cold'):
+        changeImage('rustle.jpg')     
+
+    elif (inside == 'Hot'):
+        changeImage('rustle.jpg')     
+
     else:
-        sensorVarTempHC.set(str('{:.1f}'.format(humiditySensor)) + '%    ' + str('{:.1f}'.format((temperatureSensor - 32)*(5/9)) + 'C') + '\n' + str(snippetSensorHour))
+        changeImage('normal.jpg')
 
-    # Return temparature for picture change
-    return(float(temperatureSensor))
+    root.after(1000, LoopImage)
 
-def selectWebImage():
 
-    temperatureWeb = getWebData()
+def LoopDescription():
 
-    if (temperatureWeb>90):
-        changeImageWeb('mextroll.jpg')
+    inside, outside = getStatus()
 
-    elif (temperatureWeb<89 and temperatureWeb>70):
-        changeImageWeb('normal.jpg')
+    if (inside == 'DatGeof' or outside == 'DatGeof'):
+        descTextVar.set('It\'s 69 degrees HEHEHE')
 
-    elif (temperatureWeb<69 and temperatureWeb>10):
-        changeImageWeb('rustle.jpg')
+    elif (inside == 'Shrek' or outside == 'Shrek'):
+         descTextVar.set('The temperature is DANK degrees.')
 
-    else:
-        changeImageWeb('derp.jpg')
+    if (inside == 'Lava' or outside == 'Lava'):
+        descTextVar.set('Very hot inside.')
 
-    root.after(60000, selectWebImage)
+    elif (inside == 'Arctic' or outside == 'Arctic'):
+         descTextVar.set('Very cold inside.')
+    
+    elif (inside == 'Cold'):
+        descTextVar.set('Kelsey\'s favorite temperature.')
 
-def selectSensorImage():
-
-    temperatureSensor = getSensorData()
-
-    if (temperatureSensor>90):
-        changeImageSensor('mextroll.jpg')
-
-    elif (temperatureSensor<89 and temperatureSensor>70):
-        changeImageSensor('normal.jpg')
-
-    elif (temperatureSensor<69 and temperatureSensor>10):
-        changeImageSensor('rustle.jpg')
+    elif (inside == 'Hot'):
+        descTextVar.set('Pretty hot inside.')
 
     else:
-        changeImageSensor('derp.jpg')
+        descTextVar.set('Now: Sky is ' + str(extWebText))
 
-    root.after(10000, selectSensorImage)
+    root.after(1000, LoopDescription)
+
+
+def closeApp():
+    root.destroy()
 
 # Call procedures to update values
-root.after(2000, getWebData)
-root.after(2000, getSensorData)
-root.after(3000, selectWebImage)
-root.after(4000, selectSensorImage)
-root.after(15000, closeApp)
+# root.after(500, getWebData) #temp
+# root.after(500, getSensorData) #temp
+root.after(500, LoopImage)
+root.after(1000, LoopDescription)
+root.after(1500, LoopUpdateWebData)
+root.after(3000, LoopUpdateSnsData)
+
+
+
+# root.after(15000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
