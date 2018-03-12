@@ -1,18 +1,25 @@
 # Main file
 
 import urllib.request
-import pigpio
-import DHT22
 import random
+import platform
 from tkinter import *
 from time import time
 from PIL import Image, ImageTk
 from datetime import datetime
 
+# Ajust path to files based on system
+if (platform.system() == 'Windows'):
+    path = ''
+else:
+    path = '/pi3_weather/'
+    import pigpio
+    import DHT22
+    pi = pigpio.pi()
+    dht22 = DHT22.sensor(pi, 22)
+    dht22.trigger()
+
 root = Tk()
-pi = pigpio.pi()
-dht22 = DHT22.sensor(pi, 22)
-dht22.trigger()
 
 x = 0.25
 x2 = 0.98 - x
@@ -54,17 +61,17 @@ sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 25),
 sensorVarHumiLabel.place(relx=x2, rely=0.47, anchor=CENTER)
 
 # Setup image size and place image
-originalImage = Image.open('/pi3_weather/derp.jpg')
+originalImage = Image.open(path + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
-imageLabelWeb.place(relx=x+0.125, rely=0.75, anchor=CENTER)
+imageLabelWeb.place(relx=0.275, rely=0.78, anchor=CENTER)
 
 # Setup Description Box label
 descTextVar = StringVar()
 descTextVar.set('Loading...')
-descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=360, justify=LEFT)
-descTextVarLabel.place(relx=0.525, rely=0.75, anchor=W)
+descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=425, justify=LEFT)
+descTextVarLabel.place(relx=0.45, rely=0.78, anchor=W)
 
 
 # Update image
@@ -107,7 +114,7 @@ def getWebData():
 
     start = extractedTextBlock.find('class="swiap">') + 14
     end = extractedTextBlock.find('</span>')
-    snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ')
+    snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ').replace('&lt;', '>')
 
     # Extract Forecast text snippet 
     start = webTextCode.find('span class="next swap"')
@@ -117,7 +124,7 @@ def getWebData():
     start = extractedTextBlock.find('span class="next swap"') + 47
     end = extractedTextBlock.find('</span>') - 10
     snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
-    snippetWebCast = snippetWebCast[0:70] + '...'   # Only 80 characted fit into text box.
+    snippetWebCast = snippetWebCast[0:85] + '...'   # Only 80 characted fit into text box.
 
     # Set variables, and directly change labels
     webVarTemp.set(str('{:.1f}'.format(temperatureWeb)) + '˚')
@@ -137,13 +144,15 @@ def getWebData():
 
 
 def getSensorData():
-    dht22.trigger()
-    temperatureSensor = float(dht22.temperature()) * 9/5 + 32
-    humiditySensor = float(dht22.humidity())
 
-    # Testing solution
-    # temperatureSensor = float('{:.1f}'.format(random.uniform(68, 77)))
-    # humiditySensor = float('{:.1f}'.format(random.uniform(1, 99)))
+    # Ajust vars based on system
+    if (platform.system() == 'Windows'):
+        temperatureSensor = float('{:.1f}'.format(random.uniform(69, 76)))
+        humiditySensor = float('{:.1f}'.format(random.uniform(1, 99)))
+    else:
+        dht22.trigger()
+        temperatureSensor = float(dht22.temperature()) * 9/5 + 32
+        humiditySensor = float(dht22.humidity())
 
     # Set variables, and directly change labels
     sensorVarTemp.set(str('{:.1f}'.format(temperatureSensor)) + '˚')
@@ -211,25 +220,25 @@ def LoopImage():
     inside, outside = getStatus()
 
     if (inside == 'DatGeof' or outside == 'DatGeof'):
-        changeImage('/pi3_weather/rustle.jpg')
+        changeImage(path + 'rustle.jpg')
 
     elif (inside == 'Shrek' or outside == 'Shrek'):
-        changeImage('/pi3_weather/rustle.jpg')   
+        changeImage(path + 'rustle.jpg')   
 
     if (inside == 'Lava' or outside == 'Lava'):
-        changeImage('/pi3_weather/mextroll.jpg')
+        changeImage(path + 'mextroll.jpg')
 
     elif (inside == 'Arctic' or outside == 'Arctic'):
-        changeImage('/pi3_weather/rustle.jpg')   
+        changeImage(path + 'rustle.jpg')   
     
     elif (inside == 'Cold'):
-        changeImage('/pi3_weather/rustle.jpg')     
+        changeImage(path + 'rustle.jpg')     
 
     elif (inside == 'Hot'):
-        changeImage('/pi3_weather/rustle.jpg')     
+        changeImage(path + 'rustle.jpg')     
 
     else:
-        changeImage('/pi3_weather/normal.jpg')
+        changeImage(path + 'normal.jpg')
 
     root.after(1000, LoopImage)
 
@@ -272,13 +281,17 @@ root.after(1000, LoopImage)
 root.after(1000, LoopDescription)
 root.after(2000, LoopUpdateWebData)
 root.after(3000, LoopUpdateSnsData)
-root.after(30000, closeApp)
+
+# Ajust path to files based on system
+if (platform.system() == 'Windows'):
+    path = ''
+else:
+    # Disable window controls
+    root.overrideredirect(1)
+    root.after(30000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
-
-# Disable window controls
-root.overrideredirect(1)
 
 # Set window parameters
 root.resizable(width=False, height=False)
