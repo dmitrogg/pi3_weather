@@ -29,7 +29,7 @@ font3 = "Abel"
 
 # Draw a line
 canvas = Canvas(root, background = 'black', highlightthickness=0)
-canvas.create_line(190, 20, 190, 235, fill = '#7a7a7a') # 190 offset for Pi
+canvas.create_line(160, 20, 160, 235, fill = '#7a7a7a') # 190 offset for Pi
 canvas.pack()
 
 # Web: Big Temperature label
@@ -288,7 +288,7 @@ if (platform.system() == 'Windows'):
 else:
     # Disable window controls
     root.overrideredirect(1)
-    root.after(30000, closeApp)
+    root.after(10000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
