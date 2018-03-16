@@ -1,4 +1,4 @@
-# Main file
+#!/usr/bin/env python
 
 import urllib.request
 import random
@@ -114,7 +114,7 @@ def getWebData():
 
     start = extractedTextBlock.find('class="swiap">') + 14
     end = extractedTextBlock.find('</span>')
-    snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ').replace('&lt;', '>')
+    snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ').replace('&lt;', '>').replace('Next Hour: ', '').replace('min.', 'min')
 
     # Extract Forecast text snippet 
     start = webTextCode.find('span class="next swap"')
