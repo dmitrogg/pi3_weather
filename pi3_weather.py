@@ -2,6 +2,7 @@
 
 import urllib.request
 import random
+import sys
 import platform
 from tkinter import *
 from time import time
@@ -270,8 +271,8 @@ def LoopDescription():
 
     root.after(1000, LoopDescription)
 
-
-def closeApp():
+# Any key release = event var.
+def closeApp(event):
     root.destroy()
 
 # Call procedures to update values
@@ -298,5 +299,12 @@ root.resizable(width=False, height=False)
 root.geometry('{}x{}'.format(800, 480))
 root.configure(background='black')
 
+# Call closeApp on any key release
+root.bind_all('<KeyRelease>', closeApp)
+
+# Start main tk loop
 root.mainloop()
+
+
+
 
