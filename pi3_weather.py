@@ -288,7 +288,7 @@ if (platform.system() == 'Windows'):
 else:
     # Disable window controls
     root.overrideredirect(1)
-    root.after(10000, closeApp)
+    # root.after(10000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
