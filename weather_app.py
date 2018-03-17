@@ -12,8 +12,10 @@ from datetime import datetime
 # Ajust path to files based on system
 if (platform.system() == 'Windows'):
     path = ''
+    pathImg = 'images/'
 else:
-    path = '/pi3_weather/'
+    path = 'home/pi/pi3_weather/'
+    pathImg = 'home/pi/pi3_weather/images/'
     import pigpio
     import DHT22
     pi = pigpio.pi()
@@ -62,7 +64,7 @@ sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 25),
 sensorVarHumiLabel.place(relx=x2, rely=0.47, anchor=CENTER)
 
 # Setup image size and place image
-originalImage = Image.open(path + 'derp.jpg')
+originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
@@ -221,25 +223,25 @@ def LoopImage():
     inside, outside = getStatus()
 
     if (inside == 'DatGeof' or outside == 'DatGeof'):
-        changeImage(path + 'rustle.jpg')
+        changeImage(pathImg + 'rustle.jpg')
 
     elif (inside == 'Shrek' or outside == 'Shrek'):
-        changeImage(path + 'rustle.jpg')   
+        changeImage(pathImg + 'rustle.jpg')   
 
     if (inside == 'Lava' or outside == 'Lava'):
-        changeImage(path + 'mextroll.jpg')
+        changeImage(pathImg + 'mextroll.jpg')
 
     elif (inside == 'Arctic' or outside == 'Arctic'):
-        changeImage(path + 'rustle.jpg')   
+        changeImage(pathImg + 'rustle.jpg')   
     
     elif (inside == 'Cold'):
-        changeImage(path + 'rustle.jpg')     
+        changeImage(pathImg + 'rustle.jpg')     
 
     elif (inside == 'Hot'):
-        changeImage(path + 'rustle.jpg')     
+        changeImage(pathImg + 'rustle.jpg')     
 
     else:
-        changeImage(path + 'normal.jpg')
+        changeImage(pathImg + 'normal.jpg')
 
     root.after(1000, LoopImage)
 
