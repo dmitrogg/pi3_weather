@@ -14,8 +14,8 @@ if (platform.system() == 'Windows'):
     path = ''
     pathImg = 'images/'
 else:
-    path = 'home/pi/pi3_weather/'
-    pathImg = 'home/pi/pi3_weather/images/'
+    path = '/home/pi/pi3_weather/'
+    pathImg = '/home/pi/pi3_weather/images/'
     import pigpio
     import DHT22
     pi = pigpio.pi()
