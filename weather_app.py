@@ -204,10 +204,10 @@ def getStatus():
     if (extSnsTemp >= 85.0):
         inside = 'Lava'  
 
-    elif (extSnsTemp >= 75.0 and extSnsTemp <= 84.9):
+    elif (extSnsTemp >= 80.0 and extSnsTemp <= 84.9):
         inside = 'Hot'  
 
-    elif (extSnsTemp >= 71.0 and extSnsTemp <= 74.9):
+    elif (extSnsTemp >= 71.0 and extSnsTemp <= 79.9):
         inside = 'Normal'  
 
     elif (extSnsTemp >= 65.0 and extSnsTemp <= 70.9):
