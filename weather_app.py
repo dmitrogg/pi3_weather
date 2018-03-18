@@ -68,13 +68,13 @@ originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
-imageLabelWeb.place(relx=0.275, rely=0.78, anchor=CENTER)
+imageLabelWeb.place(relx=0.25, rely=0.77, anchor=CENTER)
 
 # Setup Description Box label
 descTextVar = StringVar()
 descTextVar.set('Loading...')
 descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=425, justify=LEFT)
-descTextVarLabel.place(relx=0.45, rely=0.78, anchor=W)
+descTextVarLabel.place(relx=0.425, rely=0.78, anchor=W)
 
 
 # Update image
