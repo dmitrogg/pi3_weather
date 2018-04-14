@@ -115,6 +115,7 @@ def getWebData():
     end = start + 150
     extractedTextBlock = webTextCode[start:end]
 
+    snippetWebHour = ''
     start = extractedTextBlock.find('class="swiap">') + 14
     end = extractedTextBlock.find('</span>')
     snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ').replace('&lt;', '>').replace('Next Hour: ', '').replace('min.', 'min')
@@ -129,9 +130,20 @@ def getWebData():
     snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
     snippetWebCast = snippetWebCast[0:85] + '...'   # Only 80 characted fit into text box.
 
+    # Extract Government Alerts
+    start = webTextCode.find('bang')
+    end = start + 100
+    extractedGovAlert = webTextCode[start:end]
+    
+    snippetGovAlert = ''
+    start = 16
+    end = extractedGovAlert.find('</a>') - 10
+    snippetGovAlert = extractedGovAlert[start:end].replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ')
+
+    print(snippetGovAlert)
+
     # Set variables, and directly change labels
     webVarTemp.set(str('{:.1f}'.format(temperatureWeb)) + '˚')
-    
     webVarHumi.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
 
     # Set global variables
@@ -139,12 +151,12 @@ def getWebData():
     extWebTemp = float('{:.1f}'.format(temperatureWeb))
 
     global extWebText
-    if (str(snippetWebHour) == ''):
-        extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
-    else:
+    if (str(snippetWebHour) != ''):
         extWebText = str(snippetWebMini) + "\n" + str(snippetWebHour)
-
-
+    if (str(snippetGovAlert) != ''):
+        extWebText = str(snippetWebMini) + "\n" + str(snippetGovAlert) 
+    else:
+        extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
 
 def getSensorData():
 
