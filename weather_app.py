@@ -138,7 +138,7 @@ def getWebData():
     snippetGovAlert = ''
     start = 16
     end = extractedGovAlert.find('</a>') - 10
-    snippetGovAlert = extractedGovAlert[start:end].replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ').replace('  ', ' ')
+    snippetGovAlert = extractedGovAlert[start:end].replace('  ', '') 
 
     print(snippetGovAlert)
 
@@ -180,7 +180,7 @@ def getSensorData():
 
 def LoopUpdateWebData():
     getWebData()
-    randomTime = 60000 + (int(random.uniform(0, 60)) * 1000)
+    randomTime = 120000 + (int(random.uniform(0, 60)) * 1000)
     root.after(randomTime, LoopUpdateWebData)
 
 def LoopUpdateSnsData():
@@ -263,22 +263,22 @@ def LoopDescription():
     inside, outside = getStatus()
 
     if (inside == 'DatGeof' or outside == 'DatGeof'):
-        descTextVar.set('It\'s 69 degrees HEHEHE')
+        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'It\'s 69 degrees HEHEHE')
 
     elif (inside == 'Shrek' or outside == 'Shrek'):
-         descTextVar.set('The temperature is DANK degrees.')
+         descTextVar.set('Now: ' + str(extWebText) + '\n' + 'The temperature is DANK degrees.')
 
-    if (inside == 'Lava' or outside == 'Lava'):
-        descTextVar.set('Very hot inside.')
+    elif (inside == 'Lava' or outside == 'Lava'):
+        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Very hot inside.')
 
     elif (inside == 'Arctic' or outside == 'Arctic'):
-         descTextVar.set('Very cold inside.')
+         descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Very cold inside.')
     
     elif (inside == 'Cold'):
-        descTextVar.set('Kelsey\'s favorite temperature.')
+        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Kelsey\'s favorite temperature.')
 
     elif (inside == 'Hot'):
-        descTextVar.set('Pretty hot inside.')
+        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Pretty hot inside.')
 
     else:
         descTextVar.set('Now: ' + str(extWebText))
