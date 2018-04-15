@@ -140,8 +140,6 @@ def getWebData():
     end = extractedGovAlert.find('</a>') - 10
     snippetGovAlert = extractedGovAlert[start:end].replace('  ', '') 
 
-    print(snippetGovAlert)
-
     # Set variables, and directly change labels
     webVarTemp.set(str('{:.1f}'.format(temperatureWeb)) + '˚')
     webVarHumi.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
