@@ -24,44 +24,65 @@ else:
 
 root = Tk()
 
-x = 0.25
-x2 = 0.98 - x
+x1 = 0.165 #+ 0.025  # Column 1
+x2 = 0.495          # Column 2
+x3 = 0.825 #- 0.025  # Column 3
 font = "Josefin Sans Light"
 font2 = "Forum"
 font3 = "Abel"
 
-# Draw a line
-canvas = Canvas(root, background = 'black', highlightthickness=0)
-canvas.create_line(190, 20, 190, 235, fill = '#7a7a7a') # 190 offset for Pi
-canvas.pack()
+# # Draw a line
+# canvas = Canvas(root, background = 'black', highlightthickness=0)
+# canvas.create_line(190, 20, 190, 235, fill = '#7a7a7a') # 190 offset for Pi
+# canvas.pack()
 
-# Web: Big Temperature label
-webVarTemp = StringVar()
-webVarTemp.set('')
-webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 115), foreground='white', background='black')
-webVarTempLabel.place(relx=x+0.025, rely=0.3, anchor=CENTER) # y at 0.3 for Pi
+# Values are not rounded! Only truncated. Need to round.
 
-# Sensor: Big Temperature label
+# Big Temperature Number: Inside - Sensor
 sensorVarTemp = StringVar()
 sensorVarTemp.set('')
 sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 115), foreground='white', background='black')
-sensorVarTempLabel.place(relx=x2+0.025, rely=0.3, anchor=CENTER) # y at 0.3 for Pi
+sensorVarTempLabel.place(relx=x1+0.025, rely=0.225, anchor=CENTER) # y at 0.3 for Pi
 
-# Top row label (Outside/Inside)
-Label(root, text = "- Outside -", font=(font3, 34), foreground='white', background='black').place(relx=x, rely=0.075, anchor=CENTER)
-Label(root, text = "- Inside -", font=(font3, 34), foreground='white', background='black').place(relx=x2, rely=0.075, anchor=CENTER)
+# Big Temperature Number: Web - Fremont
+webVarTemp = StringVar()
+webVarTemp.set('')
+webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 115), foreground='white', background='black')
+webVarTempLabel.place(relx=x2+0.025, rely=0.225, anchor=CENTER) # y at 0.3 for Pi
 
-# Web: Humidity label
-webVarHumi = StringVar()
-webVarHumi.set('Loading...')
-webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 25), foreground='white', background='black')
-webVarHumiLabel.place(relx=x, rely=0.47, anchor=CENTER)
+# Big Temperature Number: Web - City
+webVarTempII = StringVar()
+webVarTempII.set('')
+webVarTempIILabel = Label(root, textvariable = webVarTempII, font=(font, 115), foreground='white', background='black')
+webVarTempIILabel.place(relx=x3+0.025, rely=0.225, anchor=CENTER) # y at 0.3 for Pi
 
-# Sensor: Humidity label
+# Top row labels (Outside/Inside) (Got to be after Big Temp labels, so it would appear in foreground.)
+Label(root, text = "- Inside -", font=(font3, 34), foreground='white', background='black').place(relx=x1, rely=0.075, anchor=CENTER)
+Label(root, text = "- Fremont -", font=(font3, 34), foreground='white', background='black').place(relx=x2, rely=0.075, anchor=CENTER)
+Label(root, text = "- City -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
+
+# Humidity - Sensor
 sensorVarHumi = StringVar()
 sensorVarHumi.set('Loading...')
 sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 25), foreground='white', background='black')
-sensorVarHumiLabel.place(relx=x2, rely=0.47, anchor=CENTER)
+sensorVarHumiLabel.place(relx=x1, rely=0.45, anchor=CENTER)
+
+# Humidity - Fremont
+webVarHumi = StringVar()
+webVarHumi.set('Loading...')
+webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 25), foreground='white', background='black')
+webVarHumiLabel.place(relx=x2, rely=0.45, anchor=CENTER)
+
+# Humidity - City
+webVarHumiII = StringVar()
+webVarHumiII.set('Loading...')
+webVarHumiLabelII = Label(root, textvariable = webVarHumiII, font=(font3, 25), foreground='white', background='black')
+webVarHumiLabelII.place(relx=x3, rely=0.45, anchor=CENTER)
+
+
+
+
+
 
 # Setup image size and place image
 originalImage = Image.open(pathImg + 'derp.jpg')
@@ -141,12 +162,12 @@ def getWebData():
     snippetGovAlert = extractedGovAlert[start:end].replace('  ', '') 
 
     # Set variables, and directly change labels
-    webVarTemp.set(str('{:.1f}'.format(temperatureWeb)) + '˚')
+    webVarTemp.set(str('{:.0f}'.format(temperatureWeb)) + '˚')
     webVarHumi.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
 
     # Set global variables
     global extWebTemp
-    extWebTemp = float('{:.1f}'.format(temperatureWeb))
+    extWebTemp = float('{:.0f}'.format(temperatureWeb))
 
     global extWebText
     if (str(snippetWebHour) != ''):
@@ -156,30 +177,95 @@ def getWebData():
     else:
         extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
 
+
+def getWebDataII():
+
+    webURL = urllib.request.urlopen("https://darksky.net/forecast/37.7934,-122.3959/us12/en")
+    webTextCode = str(webURL.read())
+    
+    # Extract main block
+    start = webTextCode.find('currently = {"time"')
+    end = start + 400
+    extractedTextBlock = webTextCode[start:end]
+
+    # Extract temperature from main block
+    start = extractedTextBlock.find('"temperature"') + 14
+    end = start + 4
+    temperatureWeb = float(extractedTextBlock[start:end].replace(',', '').replace('"', ''))
+
+    # Extract humidity from main block
+    start = extractedTextBlock.find('"humidity"') + 13
+    end = start + 2
+    humidityWeb = float(extractedTextBlock[start:end].replace(',', '0').replace('"p', '100')) # "p is for rare case of 100%
+
+    # Extract Mini-Description text from main block
+    start = extractedTextBlock.find('"summary":') + 11
+    end = extractedTextBlock.find(',"icon":') - 1
+    snippetWebMini = extractedTextBlock[start:end]
+
+    # Extract Next Hour text snippet
+    start = webTextCode.find('<strong class="swiap">')
+    end = start + 150
+    extractedTextBlock = webTextCode[start:end]
+
+    snippetWebHour = ''
+    start = extractedTextBlock.find('class="swiap">') + 14
+    end = extractedTextBlock.find('</span>')
+    snippetWebHour = extractedTextBlock[start:end].replace('</strong>: <span class="swap">', ': ').replace('&lt;', '>').replace('Next Hour: ', '').replace('min.', 'min')
+
+    # Extract Forecast text snippet 
+    start = webTextCode.find('span class="next swap"')
+    end = start + 150
+    extractedTextBlock = webTextCode[start:end]
+
+    start = extractedTextBlock.find('span class="next swap"') + 47
+    end = extractedTextBlock.find('</span>') - 10
+    snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
+    snippetWebCast = snippetWebCast[0:85] + '...'   # Only 80 characted fit into text box.
+
+    # Extract Government Alerts
+    start = webTextCode.find('bang')
+    end = start + 100
+    extractedGovAlert = webTextCode[start:end]
+    
+    snippetGovAlert = ''
+    start = 16
+    end = extractedGovAlert.find('</a>') - 10
+    snippetGovAlert = extractedGovAlert[start:end].replace('  ', '') 
+
+    # Set variables, and directly change labels
+    webVarTempII.set(str('{:.0f}'.format(temperatureWeb)) + '˚')
+    webVarHumiII.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
+
 def getSensorData():
 
     # Ajust vars based on system
     if (platform.system() == 'Windows'):
-        temperatureSensor = float('{:.1f}'.format(random.uniform(69, 76)))
-        humiditySensor = float('{:.1f}'.format(random.uniform(1, 99)))
+        temperatureSensor = float('{:.0f}'.format(random.uniform(69, 76)))
+        humiditySensor = float('{:.0f}'.format(random.uniform(1, 99)))
     else:
         dht22.trigger()
         temperatureSensor = float(dht22.temperature()) * 9/5 + 32
         humiditySensor = float(dht22.humidity())
 
     # Set variables, and directly change labels
-    sensorVarTemp.set(str('{:.1f}'.format(temperatureSensor)) + '˚')
+    sensorVarTemp.set(str('{:.0f}'.format(temperatureSensor)) + '˚')
    
     sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(humiditySensor)) + '%')
 
     # Set global variables
     global extSnsTemp
-    extSnsTemp = float('{:.1f}'.format(temperatureSensor))
+    extSnsTemp = float('{:.0f}'.format(temperatureSensor))
 
 def LoopUpdateWebData():
     getWebData()
     randomTime = 120000 + (int(random.uniform(0, 60)) * 1000)
     root.after(randomTime, LoopUpdateWebData)
+
+def LoopUpdateWebDataII():
+    getWebDataII()
+    randomTime = 180000 + (int(random.uniform(0, 60)) * 1000)
+    root.after(randomTime, LoopUpdateWebDataII)
 
 def LoopUpdateSnsData():
     getSensorData()
@@ -289,10 +375,12 @@ def closeApp(event):
 
 # Call procedures to update values
 root.after(500, getWebData) #temp
+root.after(500, getWebDataII) #temp
 root.after(500, getSensorData) #temp
 root.after(1000, LoopImage)
 root.after(1000, LoopDescription)
 root.after(2000, LoopUpdateWebData)
+root.after(2000, LoopUpdateWebDataII)
 root.after(3000, LoopUpdateSnsData)
 
 # Ajust path to files based on system
@@ -308,7 +396,7 @@ root.call('wm', 'attributes', '.', '-topmost', True)
 
 # Set window parameters
 root.resizable(width=False, height=False)
-root.geometry('{}x{}'.format(800, 480))
+root.geometry('{}x{}'.format(1024, 600))
 root.configure(background='black')
 
 # Call closeApp on any key release
