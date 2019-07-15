@@ -87,7 +87,7 @@ def changeImage(newWebImageString):
 
 def getWebData():
 
-    webURL = urllib.request.urlopen("https://darksky.net/forecast/30.3583,-90.0656/us12/en")
+    webURL = urllib.request.urlopen("https://darksky.net/forecast/37.5483,-121.9886/us12/en")
     webTextCode = str(webURL.read())
     
     # Extract main block
