@@ -24,9 +24,15 @@ else:
 
 root = Tk()
 
-x1 = 0.165 #+ 0.025  # Column 1
+x1 = 0.165 #+ 0.025 # Column 1
 x2 = 0.495          # Column 2
-x3 = 0.825 #- 0.025  # Column 3
+x3 = 0.825 #- 0.025 # Column 3
+
+if (platform.system() == 'Windows'):
+    y1 = 0.225
+else:
+    y1 = 0.25
+
 font = "Josefin Sans Light"
 font2 = "Forum"
 font3 = "Abel"
@@ -42,19 +48,19 @@ font3 = "Abel"
 sensorVarTemp = StringVar()
 sensorVarTemp.set('')
 sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 115), foreground='white', background='black')
-sensorVarTempLabel.place(relx=x1+0.025, rely=0.225, anchor=CENTER) # y at 0.3 for Pi
+sensorVarTempLabel.place(relx=x1+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
 
 # Big Temperature Number: Web - Fremont
 webVarTemp = StringVar()
 webVarTemp.set('')
 webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 115), foreground='white', background='black')
-webVarTempLabel.place(relx=x2+0.025, rely=0.225, anchor=CENTER) # y at 0.3 for Pi
+webVarTempLabel.place(relx=x2+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
 
 # Big Temperature Number: Web - City
 webVarTempII = StringVar()
 webVarTempII.set('')
 webVarTempIILabel = Label(root, textvariable = webVarTempII, font=(font, 115), foreground='white', background='black')
-webVarTempIILabel.place(relx=x3+0.025, rely=0.225, anchor=CENTER) # y at 0.3 for Pi
+webVarTempIILabel.place(relx=x3+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
 
 # Top row labels (Outside/Inside) (Got to be after Big Temp labels, so it would appear in foreground.)
 Label(root, text = "- Inside -", font=(font3, 34), foreground='white', background='black').place(relx=x1, rely=0.075, anchor=CENTER)
