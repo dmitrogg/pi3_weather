@@ -31,7 +31,7 @@ x3 = 0.825 #- 0.025 # Column 3
 if (platform.system() == 'Windows'):
     y1 = 0.225
 else:
-    y1 = 0.25
+    y1 = 0.275
 
 font = "Josefin Sans Light"
 font2 = "Forum"
@@ -65,7 +65,7 @@ webVarTempIILabel.place(relx=x3+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
 # Top row labels (Outside/Inside) (Got to be after Big Temp labels, so it would appear in foreground.)
 Label(root, text = "- Inside -", font=(font3, 34), foreground='white', background='black').place(relx=x1, rely=0.075, anchor=CENTER)
 Label(root, text = "- Fremont -", font=(font3, 34), foreground='white', background='black').place(relx=x2, rely=0.075, anchor=CENTER)
-Label(root, text = "- City -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
+Label(root, text = "- San Fran -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
 
 # Humidity - Sensor
 sensorVarHumi = StringVar()
