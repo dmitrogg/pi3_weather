@@ -70,20 +70,20 @@ Label(root, text = "- San Fran -", font=(font3, 34), foreground='white', backgro
 # Humidity - Sensor
 sensorVarHumi = StringVar()
 sensorVarHumi.set('Loading...')
-sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 25), foreground='white', background='black')
-sensorVarHumiLabel.place(relx=x1, rely=0.45, anchor=CENTER)
+sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 20), foreground='white', background='black')
+sensorVarHumiLabel.place(relx=x1, rely=0.425, anchor=CENTER)
 
 # Humidity - Fremont
 webVarHumi = StringVar()
 webVarHumi.set('Loading...')
-webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 25), foreground='white', background='black')
-webVarHumiLabel.place(relx=x2, rely=0.45, anchor=CENTER)
+webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 20), foreground='white', background='black')
+webVarHumiLabel.place(relx=x2, rely=0.425, anchor=CENTER)
 
 # Humidity - City
 webVarHumiII = StringVar()
 webVarHumiII.set('Loading...')
-webVarHumiLabelII = Label(root, textvariable = webVarHumiII, font=(font3, 25), foreground='white', background='black')
-webVarHumiLabelII.place(relx=x3, rely=0.45, anchor=CENTER)
+webVarHumiLabelII = Label(root, textvariable = webVarHumiII, font=(font3, 20), foreground='white', background='black')
+webVarHumiLabelII.place(relx=x3, rely=0.425, anchor=CENTER)
 
 
 
@@ -95,7 +95,7 @@ originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
-imageLabelWeb.place(relx=0.25, rely=0.77, anchor=CENTER)
+imageLabelWeb.place(relx=0.165, rely=0.77, anchor=CENTER)
 
 # Setup Description Box label
 descTextVar = StringVar()
@@ -112,6 +112,8 @@ def changeImage(newWebImageString):
     imageLabelWeb.configure(image=image)
     imageLabelWeb.image = image
 
+
+# Get Web Data - Fremont
 def getWebData():
 
     webURL = urllib.request.urlopen("https://darksky.net/forecast/37.5483,-121.9886/us12/en")
@@ -141,7 +143,6 @@ def getWebData():
     start = webTextCode.find('<strong class="swiap">')
     end = start + 150
     extractedTextBlock = webTextCode[start:end]
-
     snippetWebHour = ''
     start = extractedTextBlock.find('class="swiap">') + 14
     end = extractedTextBlock.find('</span>')
@@ -151,7 +152,6 @@ def getWebData():
     start = webTextCode.find('span class="next swap"')
     end = start + 150
     extractedTextBlock = webTextCode[start:end]
-
     start = extractedTextBlock.find('span class="next swap"') + 47
     end = extractedTextBlock.find('</span>') - 10
     snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
@@ -161,15 +161,16 @@ def getWebData():
     start = webTextCode.find('bang')
     end = start + 100
     extractedGovAlert = webTextCode[start:end]
-    
     snippetGovAlert = ''
     start = 16
     end = extractedGovAlert.find('</a>') - 10
     snippetGovAlert = extractedGovAlert[start:end].replace('  ', '') 
 
     # Set variables, and directly change labels
-    webVarTemp.set(str('{:.0f}'.format(temperatureWeb)) + '˚')
-    webVarHumi.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
+    webVarTemp.set(str('{:.0f}'.format(round(temperatureWeb))) + '˚')
+    webVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
+
+ 
 
     # Set global variables
     global extWebTemp
@@ -183,7 +184,7 @@ def getWebData():
     else:
         extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
 
-
+# Get Web Data - San Fran
 def getWebDataII():
 
     webURL = urllib.request.urlopen("https://darksky.net/forecast/37.7934,-122.3959/us12/en")
@@ -240,9 +241,10 @@ def getWebDataII():
     snippetGovAlert = extractedGovAlert[start:end].replace('  ', '') 
 
     # Set variables, and directly change labels
-    webVarTempII.set(str('{:.0f}'.format(temperatureWeb)) + '˚')
-    webVarHumiII.set('Humidity ' + str('{:.0f}'.format(humidityWeb)) + '%')
+    webVarTempII.set(str('{:.0f}'.format(round(temperatureWeb))) + '˚')
+    webVarHumiII.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
 
+# Get Sensor Data
 def getSensorData():
 
     # Ajust vars based on system
@@ -255,9 +257,8 @@ def getSensorData():
         humiditySensor = float(dht22.humidity())
 
     # Set variables, and directly change labels
-    sensorVarTemp.set(str('{:.0f}'.format(temperatureSensor)) + '˚')
-   
-    sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(humiditySensor)) + '%')
+    sensorVarTemp.set(str('{:.0f}'.format(round(temperatureSensor))) + '˚')
+    sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humiditySensor))) + '%')
 
     # Set global variables
     global extSnsTemp
