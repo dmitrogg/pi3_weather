@@ -67,30 +67,77 @@ Label(root, text = "- Inside -", font=(font3, 34), foreground='white', backgroun
 Label(root, text = "- Fremont -", font=(font3, 34), foreground='white', background='black').place(relx=x2, rely=0.075, anchor=CENTER)
 Label(root, text = "- San Fran -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
 
+
 # Humidity - Sensor
 sensorVarHumi = StringVar()
-sensorVarHumi.set('Loading...')
+sensorVarHumi.set('...')
 sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 20), foreground='white', background='black')
-sensorVarHumiLabel.place(relx=x1, rely=0.425, anchor=CENTER)
-
+sensorVarHumiLabel.place(relx=x1-0.03, rely=0.425, anchor=CENTER)
 # Humidity - Fremont
 webVarHumi = StringVar()
-webVarHumi.set('Loading...')
+webVarHumi.set('...')
 webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 20), foreground='white', background='black')
-webVarHumiLabel.place(relx=x2, rely=0.425, anchor=CENTER)
-
+webVarHumiLabel.place(relx=x2-0.03, rely=0.425, anchor=CENTER)
 # Humidity - City
 webVarHumiII = StringVar()
-webVarHumiII.set('Loading...')
+webVarHumiII.set('...')
 webVarHumiLabelII = Label(root, textvariable = webVarHumiII, font=(font3, 20), foreground='white', background='black')
-webVarHumiLabelII.place(relx=x3, rely=0.425, anchor=CENTER)
+webVarHumiLabelII.place(relx=x3-0.03, rely=0.425, anchor=CENTER)
+
+
+# Wind - Sensor
+sensorVarWind = StringVar()
+sensorVarWind.set('...')
+sensorVarWindLabel = Label(root, textvariable = sensorVarWind, font=(font3, 20), foreground='white', background='black')
+sensorVarWindLabel.place(relx=x1+0.085, rely=0.425, anchor=CENTER)
+# Wind - Fremont
+webVarWind = StringVar()
+webVarWind.set('...')
+webVarWindLabel = Label(root, textvariable = webVarWind, font=(font3, 20), foreground='white', background='black')
+webVarWindLabel.place(relx=x2+0.085, rely=0.425, anchor=CENTER)
+# Wind - City
+webVarWindII = StringVar()
+webVarWindII.set('...')
+webVarWindLabelII = Label(root, textvariable = webVarWindII, font=(font3, 20), foreground='white', background='black')
+webVarWindLabelII.place(relx=x3+0.085, rely=0.425, anchor=CENTER)
+
+
+# Humidity Icons
+HumiImageOriginal = Image.open(pathImg + 'humi.png')
+HumiResized = HumiImageOriginal.resize((40, 43), Image.ANTIALIAS)
+HumiImage = ImageTk.PhotoImage(HumiResized)
+
+imageLabelHumiImage = Label(root, image=HumiImage, background='black')
+imageLabelHumiImage.place(relx=x1-0.075, rely=0.425, anchor=CENTER)
+
+imageLabelHumiImage = Label(root, image=HumiImage, background='black')
+imageLabelHumiImage.place(relx=x2-0.075, rely=0.425, anchor=CENTER)
+
+imageLabelHumiImage = Label(root, image=HumiImage, background='black')
+imageLabelHumiImage.place(relx=x3-0.075, rely=0.425, anchor=CENTER)
+
+# Wind Icons
+WindImageOriginal = Image.open(pathImg + 'wind.png')
+WindResized = WindImageOriginal.resize((40, 43), Image.ANTIALIAS)
+WindImage = ImageTk.PhotoImage(WindResized)
+
+imageLabelWindImage = Label(root, image=WindImage, background='black')
+imageLabelWindImage.place(relx=x1+0.03, rely=0.425, anchor=CENTER)
+
+imageLabelWindImage = Label(root, image=WindImage, background='black')
+imageLabelWindImage.place(relx=x2+0.03, rely=0.425, anchor=CENTER)
+
+imageLabelWindImage = Label(root, image=WindImage, background='black')
+imageLabelWindImage.place(relx=x3+0.03, rely=0.425, anchor=CENTER)
 
 
 
 
 
 
-# Setup image size and place image
+
+
+# Setup Big image size and place image
 originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
@@ -134,6 +181,11 @@ def getWebData():
     end = start + 2
     humidityWeb = float(extractedTextBlock[start:end].replace(',', '0').replace('"p', '100')) # "p is for rare case of 100%
 
+   # Extract wind from main block
+    start = extractedTextBlock.find('"windSpeed"') + 12
+    end = start + 4
+    windWeb = float(extractedTextBlock[start:end].replace(',', '0'))
+
     # Extract Mini-Description text from main block
     start = extractedTextBlock.find('"summary":') + 11
     end = extractedTextBlock.find(',"icon":') - 1
@@ -168,8 +220,9 @@ def getWebData():
 
     # Set variables, and directly change labels
     webVarTemp.set(str('{:.0f}'.format(round(temperatureWeb))) + '˚')
-    webVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
-
+    #webVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
+    webVarHumi.set(str('{:.0f}'.format(round(humidityWeb))) + '%')
+    webVarWind.set(str('{:.0f}'.format(round(windWeb))) + 'mph')
  
 
     # Set global variables
@@ -204,6 +257,11 @@ def getWebDataII():
     start = extractedTextBlock.find('"humidity"') + 13
     end = start + 2
     humidityWeb = float(extractedTextBlock[start:end].replace(',', '0').replace('"p', '100')) # "p is for rare case of 100%
+
+   # Extract wind from main block
+    start = extractedTextBlock.find('"windSpeed"') + 12
+    end = start + 4
+    windWeb = float(extractedTextBlock[start:end].replace(',', '0'))
 
     # Extract Mini-Description text from main block
     start = extractedTextBlock.find('"summary":') + 11
@@ -242,7 +300,9 @@ def getWebDataII():
 
     # Set variables, and directly change labels
     webVarTempII.set(str('{:.0f}'.format(round(temperatureWeb))) + '˚')
-    webVarHumiII.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
+    #webVarHumiII.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
+    webVarHumiII.set(str('{:.0f}'.format(round(humidityWeb))) + '%')
+    webVarWindII.set(str('{:.0f}'.format(round(windWeb))) + 'mph')
 
 # Get Sensor Data
 def getSensorData():
@@ -251,14 +311,18 @@ def getSensorData():
     if (platform.system() == 'Windows'):
         temperatureSensor = float('{:.0f}'.format(random.uniform(69, 76)))
         humiditySensor = float('{:.0f}'.format(random.uniform(1, 99)))
+        windSensor = float('{:.0f}'.format(random.uniform(1, 99)))
     else:
         dht22.trigger()
         temperatureSensor = float(dht22.temperature()) * 9/5 + 32
         humiditySensor = float(dht22.humidity())
+        windSensor = '0'
 
     # Set variables, and directly change labels
     sensorVarTemp.set(str('{:.0f}'.format(round(temperatureSensor))) + '˚')
-    sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humiditySensor))) + '%')
+    #sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humiditySensor))) + '%')
+    sensorVarHumi.set(str('{:.0f}'.format(round(humiditySensor))) + '%')
+    sensorVarWind.set(str('{:.0f}'.format(round(windSensor))) + 'mph')
 
     # Set global variables
     global extSnsTemp
