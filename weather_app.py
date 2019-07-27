@@ -183,8 +183,8 @@ def getWebData():
 
    # Extract wind from main block
     start = extractedTextBlock.find('"windSpeed"') + 12
-    end = start + 4
-    windWeb = float(extractedTextBlock[start:end].replace(',', '0'))
+    end = start + 3
+    windWeb = float(extractedTextBlock[start:end].replace(',', '').replace('"', ''))
 
     # Extract Mini-Description text from main block
     start = extractedTextBlock.find('"summary":') + 11
@@ -260,8 +260,8 @@ def getWebDataII():
 
    # Extract wind from main block
     start = extractedTextBlock.find('"windSpeed"') + 12
-    end = start + 4
-    windWeb = float(extractedTextBlock[start:end].replace(',', '0'))
+    end = start + 3
+    windWeb = float(extractedTextBlock[start:end].replace(',', '').replace('"', ''))
 
     # Extract Mini-Description text from main block
     start = extractedTextBlock.find('"summary":') + 11
@@ -443,6 +443,7 @@ def LoopDescription():
 # Any key release = event var.
 def closeApp(event):
     root.destroy()
+    root.quit()
 
 # Call procedures to update values
 root.after(500, getWebData) #temp
@@ -471,7 +472,8 @@ root.geometry('{}x{}'.format(1024, 600))
 root.configure(background='black')
 
 # Call closeApp on any key release
-root.bind_all('<KeyRelease>', closeApp)
+#root.bind_all('<KeyRelease>', closeApp)
+root.bind_all("<Button-1>", closeApp)
 
 # Start main tk loop
 root.mainloop()
