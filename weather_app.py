@@ -311,12 +311,12 @@ def getSensorData():
     if (platform.system() == 'Windows'):
         temperatureSensor = float('{:.0f}'.format(random.uniform(69, 76)))
         humiditySensor = float('{:.0f}'.format(random.uniform(1, 99)))
-        windSensor = float('{:.0f}'.format(random.uniform(1, 99)))
+        windSensor = float('0')
     else:
         dht22.trigger()
         temperatureSensor = float(dht22.temperature()) * 9/5 + 32
         humiditySensor = float(dht22.humidity())
-        windSensor = '0'
+        windSensor = float('0')
 
     # Set variables, and directly change labels
     sensorVarTemp.set(str('{:.0f}'.format(round(temperatureSensor))) + '˚')
