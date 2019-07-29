@@ -68,34 +68,34 @@ Label(root, text = "- Fremont -", font=(font3, 34), foreground='white', backgrou
 Label(root, text = "- San Fran -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
 
 
-# Humidity - Sensor
+# Humidity Number: Inside - Sensor
 sensorVarHumi = StringVar()
 sensorVarHumi.set('...')
 sensorVarHumiLabel = Label(root, textvariable = sensorVarHumi, font=(font3, 20), foreground='white', background='black')
 sensorVarHumiLabel.place(relx=x1-0.03, rely=0.425, anchor=CENTER)
-# Humidity - Fremont
+# Humidity Number: Web - Fremont
 webVarHumi = StringVar()
 webVarHumi.set('...')
 webVarHumiLabel = Label(root, textvariable = webVarHumi, font=(font3, 20), foreground='white', background='black')
 webVarHumiLabel.place(relx=x2-0.03, rely=0.425, anchor=CENTER)
-# Humidity - City
+# Humidity Number: Web - City
 webVarHumiII = StringVar()
 webVarHumiII.set('...')
 webVarHumiLabelII = Label(root, textvariable = webVarHumiII, font=(font3, 20), foreground='white', background='black')
 webVarHumiLabelII.place(relx=x3-0.03, rely=0.425, anchor=CENTER)
 
 
-# Wind - Sensor
+# Wind Number: Inside - Sensor
 sensorVarWind = StringVar()
 sensorVarWind.set('...')
 sensorVarWindLabel = Label(root, textvariable = sensorVarWind, font=(font3, 20), foreground='white', background='black')
 sensorVarWindLabel.place(relx=x1+0.085, rely=0.425, anchor=CENTER)
-# Wind - Fremont
+# Wind Number: Web - Fremont
 webVarWind = StringVar()
 webVarWind.set('...')
 webVarWindLabel = Label(root, textvariable = webVarWind, font=(font3, 20), foreground='white', background='black')
 webVarWindLabel.place(relx=x2+0.085, rely=0.425, anchor=CENTER)
-# Wind - City
+# Wind Number: Web - City
 webVarWindII = StringVar()
 webVarWindII.set('...')
 webVarWindLabelII = Label(root, textvariable = webVarWindII, font=(font3, 20), foreground='white', background='black')
@@ -131,12 +131,6 @@ imageLabelWindImage = Label(root, image=WindImage, background='black')
 imageLabelWindImage.place(relx=x3+0.03, rely=0.425, anchor=CENTER)
 
 
-
-
-
-
-
-
 # Setup Big image size and place image
 originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
@@ -146,9 +140,9 @@ imageLabelWeb.place(relx=0.165, rely=0.77, anchor=CENTER)
 
 # Setup Description Box label
 descTextVar = StringVar()
-descTextVar.set('Loading...')
-descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=425, justify=LEFT)
-descTextVarLabel.place(relx=0.425, rely=0.78, anchor=W)
+descTextVar.set('Derping...')
+descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=500, justify=LEFT)
+descTextVarLabel.place(relx=0.30, rely=0.765, anchor=W)
 
 
 # Update image
@@ -207,7 +201,7 @@ def getWebData():
     start = extractedTextBlock.find('span class="next swap"') + 47
     end = extractedTextBlock.find('</span>') - 10
     snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
-    snippetWebCast = snippetWebCast[0:85] + '...'   # Only 80 characted fit into text box.
+    snippetWebCast = snippetWebCast[0:120] # 120 characters in text box.
 
     # Extract Government Alerts
     start = webTextCode.find('bang')
@@ -220,24 +214,26 @@ def getWebData():
 
     # Set variables, and directly change labels
     webVarTemp.set(str('{:.0f}'.format(round(temperatureWeb))) + '˚')
-    #webVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
     webVarHumi.set(str('{:.0f}'.format(round(humidityWeb))) + '%')
     webVarWind.set(str('{:.0f}'.format(round(windWeb))) + 'mph')
- 
+    #webVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')   
 
-    # Set global variables
+    # Set global: Temperature
     global extWebTemp
     extWebTemp = float('{:.0f}'.format(temperatureWeb))
 
+    #Set global: Text
     global extWebText
-    if (str(snippetWebHour) != ''):
-        extWebText = str(snippetWebMini) + "\n" + str(snippetWebHour)
+    extWebText = '~ Fremont ~' + "\n" + str(snippetWebMini) + " right now." + "\n"
     if (str(snippetGovAlert) != ''):
-        extWebText = str(snippetWebMini) + "\n" + str(snippetGovAlert) 
+        extWebText = extWebText + 'ALERT ' + str(snippetGovAlert) + "\n"
+    elif (str(snippetWebHour) != ''):
+         extWebText = extWebText + 'Next hour ' + str(snippetWebHour) + "\n"
     else:
-        extWebText = str(snippetWebMini) + "\n" + str(snippetWebCast)
+        extWebText = extWebText + str(snippetWebCast)
 
-# Get Web Data - San Fran
+
+# Get Web Data - City
 def getWebDataII():
 
     webURL = urllib.request.urlopen("https://darksky.net/forecast/37.7934,-122.3959/us12/en")
@@ -286,7 +282,7 @@ def getWebDataII():
     start = extractedTextBlock.find('span class="next swap"') + 47
     end = extractedTextBlock.find('</span>') - 10
     snippetWebCast = extractedTextBlock[start:end].replace('&nbsp;', ' ')
-    snippetWebCast = snippetWebCast[0:85] + '...'   # Only 80 characted fit into text box.
+    snippetWebCast = snippetWebCast[0:120] # 120 characters in text box.
 
     # Extract Government Alerts
     start = webTextCode.find('bang')
@@ -300,11 +296,26 @@ def getWebDataII():
 
     # Set variables, and directly change labels
     webVarTempII.set(str('{:.0f}'.format(round(temperatureWeb))) + '˚')
-    #webVarHumiII.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')
     webVarHumiII.set(str('{:.0f}'.format(round(humidityWeb))) + '%')
     webVarWindII.set(str('{:.0f}'.format(round(windWeb))) + 'mph')
+    #webVarHumiII.set('Humidity ' + str('{:.0f}'.format(round(humidityWeb))) + '%')    
 
-# Get Sensor Data
+    # Set global: Temperature
+    global extWebTempII
+    extWebTempII = float('{:.0f}'.format(temperatureWeb))
+
+    #Set global: Text
+    global extWebTextII
+    extWebTextII = '~ San Francisco ~' + "\n" + str(snippetWebMini) + " right now." + "\n"
+    if (str(snippetGovAlert) != ''):
+        extWebTextII = extWebTextII + 'ALERT ' + str(snippetGovAlert) + "\n"
+    elif (str(snippetWebHour) != ''):
+         extWebTextII = extWebTextII + 'Next hour ' + str(snippetWebHour) + "\n"
+    else:
+        extWebTextII = extWebTextII + str(snippetWebCast)
+
+
+# Get Sensor Data - Inside
 def getSensorData():
 
     # Ajust vars based on system
@@ -320,40 +331,48 @@ def getSensorData():
 
     # Set variables, and directly change labels
     sensorVarTemp.set(str('{:.0f}'.format(round(temperatureSensor))) + '˚')
-    #sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humiditySensor))) + '%')
     sensorVarHumi.set(str('{:.0f}'.format(round(humiditySensor))) + '%')
     sensorVarWind.set(str('{:.0f}'.format(round(windSensor))) + 'mph')
+    #sensorVarHumi.set('Humidity ' + str('{:.0f}'.format(round(humiditySensor))) + '%')    
 
-    # Set global variables
+    # Set global: Temperature
     global extSnsTemp
     extSnsTemp = float('{:.0f}'.format(temperatureSensor))
 
+    #Set global: Text
+    global extSnsText
+    extSnsText = '~ Inside ~' + "\n"
+
+
+# Fetch data from web and sensor
 def LoopUpdateWebData():
     getWebData()
-    randomTime = 120000 + (int(random.uniform(0, 60)) * 1000)
+    randomTime = 120000 + (int(random.uniform(0, 60)) * 1000) # 120 seconds, 2 minutes
     root.after(randomTime, LoopUpdateWebData)
 
 def LoopUpdateWebDataII():
     getWebDataII()
-    randomTime = 180000 + (int(random.uniform(0, 60)) * 1000)
-    root.after(randomTime, LoopUpdateWebDataII)
+    randomTimeII = 180000 + (int(random.uniform(0, 60)) * 1000) # 180 seconds, 3 minutes
+    root.after(randomTimeII, LoopUpdateWebDataII)
 
 def LoopUpdateSnsData():
     getSensorData()
-    root.after(5000, LoopUpdateSnsData)
+    root.after(5000, LoopUpdateSnsData) # 5 seconds
 
+
+# Define conditions based on exfiltrated values
 def getStatus():
 
     # Meme conditions
     if (extWebTemp == 69.0 or extSnsTemp == 69.0):
-        outside = 'DatGeof'
+        outside = '69'
 
     if (extWebTemp == 42.0 or extSnsTemp == 42.0):
-        outside = 'Shrek'
+        outside = '420'
 
     # Outside
     if (extWebTemp >= 100.0):
-        outside = 'Lava'  
+        outside = 'Hell'  
 
     elif (extWebTemp >= 85.0 and extWebTemp <= 99.9):
         outside = 'Hot'  
@@ -369,7 +388,7 @@ def getStatus():
 
     # Inside
     if (extSnsTemp >= 85.0):
-        inside = 'Lava'  
+        inside = 'Hell'  
 
     elif (extSnsTemp >= 80.0 and extSnsTemp <= 84.9):
         inside = 'Hot'  
@@ -385,30 +404,34 @@ def getStatus():
 
     return(inside, outside)
 
+
+# Set Big Image and Description
 def LoopImage():
 
     inside, outside = getStatus()
 
-    if (inside == 'DatGeof' or outside == 'DatGeof'):
-        changeImage(pathImg + 'rustle.jpg')
+    changeImage(pathImg + 'normal.jpg')
 
-    elif (inside == 'Shrek' or outside == 'Shrek'):
-        changeImage(pathImg + 'rustle.jpg')   
+    # if (inside == 'DatGeof' or outside == 'DatGeof'):
+    #     changeImage(pathImg + 'rustle.jpg')
 
-    if (inside == 'Lava' or outside == 'Lava'):
-        changeImage(pathImg + 'mextroll.jpg')
+    # elif (inside == 'Shrek' or outside == 'Shrek'):
+    #     changeImage(pathImg + 'rustle.jpg')   
 
-    elif (inside == 'Arctic' or outside == 'Arctic'):
-        changeImage(pathImg + 'rustle.jpg')   
+    # if (inside == 'Lava' or outside == 'Lava'):
+    #     changeImage(pathImg + 'mextroll.jpg')
+
+    # elif (inside == 'Arctic' or outside == 'Arctic'):
+    #     changeImage(pathImg + 'rustle.jpg')   
     
-    elif (inside == 'Cold'):
-        changeImage(pathImg + 'rustle.jpg')     
+    # elif (inside == 'Cold'):
+    #     changeImage(pathImg + 'rustle.jpg')     
 
-    elif (inside == 'Hot'):
-        changeImage(pathImg + 'rustle.jpg')     
+    # elif (inside == 'Hot'):
+    #     changeImage(pathImg + 'rustle.jpg')     
 
-    else:
-        changeImage(pathImg + 'normal.jpg')
+    # else:
+    #     changeImage(pathImg + 'normal.jpg')
 
     root.after(1000, LoopImage)
 
@@ -417,33 +440,56 @@ def LoopDescription():
 
     inside, outside = getStatus()
 
-    if (inside == 'DatGeof' or outside == 'DatGeof'):
-        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'It\'s 69 degrees HEHEHE')
+    descTextVar.set(str(extWebTextII))
 
-    elif (inside == 'Shrek' or outside == 'Shrek'):
-         descTextVar.set('Now: ' + str(extWebText) + '\n' + 'The temperature is DANK degrees.')
+    # if (inside == 'DatGeof' or outside == 'DatGeof'):
+    #     descTextVar.set(str(extWebText) + '\n' + 'It\'s 69 degrees HEHEHE')
 
-    elif (inside == 'Lava' or outside == 'Lava'):
-        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Very hot inside.')
+    # elif (inside == 'Shrek' or outside == 'Shrek'):
+    #      descTextVar.set(str(extWebText) + '\n' + 'The temperature is DANK degrees.')
 
-    elif (inside == 'Arctic' or outside == 'Arctic'):
-         descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Very cold inside.')
+    # elif (inside == 'Lava' or outside == 'Lava'):
+    #     descTextVar.set(str(extWebText) + '\n' + 'Very hot inside.')
+
+    # elif (inside == 'Arctic' or outside == 'Arctic'):
+    #      descTextVar.set(str(extWebText) + '\n' + 'Very cold inside.')
     
-    elif (inside == 'Cold'):
-        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Kelsey\'s favorite temperature.')
+    # elif (inside == 'Cold'):
+    #     descTextVar.set(str(extWebText) + '\n' + 'Kelsey\'s favorite temperature.')
 
-    elif (inside == 'Hot'):
-        descTextVar.set('Now: ' + str(extWebText) + '\n' + 'Pretty hot inside.')
+    # elif (inside == 'Hot'):
+    #     descTextVar.set(str(extWebText) + '\n' + 'Pretty hot inside.')
 
-    else:
-        descTextVar.set('Now: ' + str(extWebText))
+    # else:
+    #     descTextVar.set(str(extWebText))
 
     root.after(1000, LoopDescription)
 
+
+
+
+
+def callback():
+    print("click!")
+
+
+# Make button
+arloImage = ImageTk.PhotoImage(Image.open(pathImg + 'arlo.png'))
+
+butt = Button(root, image = arloImage, command = callback, bg = 'black') #state=DISABLED)
+butt.place(x=815, y=345)
+
+
+
+
+
+
+
 # Any key release = event var.
 def closeApp(event):
-    root.destroy()
-    root.quit()
+    #root.destroy()
+    #root.quit()
+    print("it's ya boi")
 
 # Call procedures to update values
 root.after(500, getWebData) #temp
@@ -461,7 +507,6 @@ if (platform.system() == 'Windows'):
 else:
     # Disable window controls
     root.overrideredirect(1)
-    # root.after(10000, closeApp)
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
@@ -477,7 +522,4 @@ root.bind_all("<Button-1>", closeApp)
 
 # Start main tk loop
 root.mainloop()
-
-
-
 
