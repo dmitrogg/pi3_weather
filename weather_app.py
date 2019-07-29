@@ -467,20 +467,15 @@ def LoopDescription():
 
 
 
-
-
 def callback():
-    print("click!")
-
-
+    changeImage(pathImg + 'rustle.jpg')
+    descTextVar.set("    It doesn't work yet.")
+    
 # Make button
 arloImage = ImageTk.PhotoImage(Image.open(pathImg + 'arlo.png'))
 
 butt = Button(root, image = arloImage, command = callback, bg = 'black') #state=DISABLED)
 butt.place(x=815, y=345)
-
-
-
 
 
 
