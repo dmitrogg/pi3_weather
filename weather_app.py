@@ -440,7 +440,7 @@ def LoopDescription():
 
     inside, outside = getStatus()
 
-    descTextVar.set(str(extWebTextII))
+    descTextVar.set(str(extWebText))
 
     # if (inside == 'DatGeof' or outside == 'DatGeof'):
     #     descTextVar.set(str(extWebText) + '\n' + 'It\'s 69 degrees HEHEHE')
