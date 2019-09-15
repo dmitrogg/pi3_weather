@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 
-import urllib.request
-import random
+# from time import sleep
+# from time import time
+# from datetime import datetime
+# import datetime
 import sys
+import random
 import platform
+from time import *
 from tkinter import *
-from time import time
+import urllib.request
 from PIL import Image, ImageTk
-from datetime import datetime
 
 # Ajust path to files based on system
 if (platform.system() == 'Windows'):
@@ -24,50 +27,51 @@ else:
 
 root = Tk()
 
+# Set alignemnt coordinates
 x1 = 0.165 #+ 0.025 # Column 1
 x2 = 0.495          # Column 2
 x3 = 0.825 #- 0.025 # Column 3
 
 if (platform.system() == 'Windows'):
-    y1 = 0.225
+    y1 = 0.225 # pi
 else:
-    y1 = 0.275
+    y1 = 0.275 # win
 
 font = "Josefin Sans Light"
 font2 = "Forum"
 font3 = "Abel"
 
-# # Draw a line
-# canvas = Canvas(root, background = 'black', highlightthickness=0)
-# canvas.create_line(190, 20, 190, 235, fill = '#7a7a7a') # 190 offset for Pi
-# canvas.pack()
 
 # Values are not rounded! Only truncated. Need to round.
 
+#region BIG NUMBERS
 # Big Temperature Number: Inside - Sensor
 sensorVarTemp = StringVar()
 sensorVarTemp.set('')
 sensorVarTempLabel = Label(root, textvariable = sensorVarTemp, font=(font, 115), foreground='white', background='black')
-sensorVarTempLabel.place(relx=x1+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
+sensorVarTempLabel.place(relx=x1+0.025, rely=y1, anchor=CENTER) 
 
 # Big Temperature Number: Web - Fremont
 webVarTemp = StringVar()
 webVarTemp.set('')
 webVarTempLabel = Label(root, textvariable = webVarTemp, font=(font, 115), foreground='white', background='black')
-webVarTempLabel.place(relx=x2+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
+webVarTempLabel.place(relx=x2+0.025, rely=y1, anchor=CENTER) 
 
 # Big Temperature Number: Web - City
 webVarTempII = StringVar()
 webVarTempII.set('')
 webVarTempIILabel = Label(root, textvariable = webVarTempII, font=(font, 115), foreground='white', background='black')
-webVarTempIILabel.place(relx=x3+0.025, rely=y1, anchor=CENTER) # y at 0.3 for Pi
+webVarTempIILabel.place(relx=x3+0.025, rely=y1, anchor=CENTER) 
+#endregion BIG NUMBERS
 
-# Top row labels (Outside/Inside) (Got to be after Big Temp labels, so it would appear in foreground.)
+# region TOP ROW
+# Top row labels - places (Has to be after BIG NUMBERS, so it would appear in foreground.)
 Label(root, text = "- Inside -", font=(font3, 34), foreground='white', background='black').place(relx=x1, rely=0.075, anchor=CENTER)
 Label(root, text = "- Fremont -", font=(font3, 34), foreground='white', background='black').place(relx=x2, rely=0.075, anchor=CENTER)
 Label(root, text = "- San Fran -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
+#endregion TOP ROW
 
-
+# region HUMIDITY AND WIND NUMBERS
 # Humidity Number: Inside - Sensor
 sensorVarHumi = StringVar()
 sensorVarHumi.set('...')
@@ -84,7 +88,6 @@ webVarHumiII.set('...')
 webVarHumiLabelII = Label(root, textvariable = webVarHumiII, font=(font3, 20), foreground='white', background='black')
 webVarHumiLabelII.place(relx=x3-0.03, rely=0.425, anchor=CENTER)
 
-
 # Wind Number: Inside - Sensor
 sensorVarWind = StringVar()
 sensorVarWind.set('...')
@@ -100,8 +103,9 @@ webVarWindII = StringVar()
 webVarWindII.set('...')
 webVarWindLabelII = Label(root, textvariable = webVarWindII, font=(font3, 20), foreground='white', background='black')
 webVarWindLabelII.place(relx=x3+0.085, rely=0.425, anchor=CENTER)
+#endregion HUMIDITY AND WIND NUMBERS
 
-
+# region HUMIDITY AND WIND ICONS
 # Humidity Icons
 HumiImageOriginal = Image.open(pathImg + 'humi.png')
 HumiResized = HumiImageOriginal.resize((40, 43), Image.ANTIALIAS)
@@ -129,23 +133,22 @@ imageLabelWindImage.place(relx=x2+0.03, rely=0.425, anchor=CENTER)
 
 imageLabelWindImage = Label(root, image=WindImage, background='black')
 imageLabelWindImage.place(relx=x3+0.03, rely=0.425, anchor=CENTER)
+# endregion HUMIDITY AND WIND ICONS
 
-
-# Setup Big image size and place image
+# Setup big image size and place image
 originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
 image = ImageTk.PhotoImage(resized)
 imageLabelWeb = Label(root, image=image, background='black')
 imageLabelWeb.place(relx=0.165, rely=0.77, anchor=CENTER)
 
-# Setup Description Box label
+# Setup big description Box label
 descTextVar = StringVar()
 descTextVar.set('Derping...')
 descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=500, justify=LEFT)
 descTextVarLabel.place(relx=0.30, rely=0.765, anchor=W)
 
-
-# Update image
+# Function: change big image
 def changeImage(newWebImageString):
     newImage = Image.open(newWebImageString)
     newResizedImage = newImage.resize((240, 180), Image.ANTIALIAS)
@@ -405,12 +408,22 @@ def getStatus():
     return(inside, outside)
 
 
+# # Set global Arming flag
+# global extArmingFlag
+# extArmingFlag = 'idle'
+
+
 # Set Big Image and Description
 def LoopImage():
 
     inside, outside = getStatus()
 
     changeImage(pathImg + 'normal.jpg')
+
+    # if (extArmingFlag == 'arming'):
+    #     changeImage(pathImg + 'arming.jpg')
+    # else:
+    #     changeImage(pathImg + 'normal.jpg')
 
     # if (inside == 'DatGeof' or outside == 'DatGeof'):
     #     changeImage(pathImg + 'rustle.jpg')
@@ -442,6 +455,12 @@ def LoopDescription():
 
     descTextVar.set(str(extWebText))
 
+    # if (extArmingFlag == 'arming'):
+    #     descTextVar.set("     Arming Arlo in 60 seconds.")
+    #     sleep(2)
+    # else:
+    #     descTextVar.set(str(extWebText))
+
     # if (inside == 'DatGeof' or outside == 'DatGeof'):
     #     descTextVar.set(str(extWebText) + '\n' + 'It\'s 69 degrees HEHEHE')
 
@@ -467,18 +486,73 @@ def LoopDescription():
 
 
 
-def callback():
-    changeImage(pathImg + 'rustle.jpg')
-    descTextVar.set("    It doesn't work yet.")
+def callArlo():
+
+    # global extArmingFlag
+    # extArmingFlag = 'arming'
+
+    # Setup Big image size and place image
+    armingImageSource = Image.open(pathImg + 'arming.jpg')
+    armingResized = armingImageSource.resize((240, 180), Image.ANTIALIAS)
+    armingImage = ImageTk.PhotoImage(armingResized)
+    armingImageLabelWeb = Label(root, image=armingImage, background='black')
+    armingImageLabelWeb.place(relx=0.165, rely=0.77, anchor=CENTER)
+
+    # Setup Description Box label
+    descTextVar = StringVar()
+    descTextVar.set('Derping...')
+    descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=500, justify=LEFT)
+    descTextVarLabel.place(relx=0.30, rely=0.765, anchor=W)
+
+
+    sleep(5)
+
+
+
+    print("armed")
+
+    # sleep(2)
+
+    # global extArmingFlag
+    # extArmingFlag = 'idle'
+
+
+    # f = urllib.request.urlopen('https://maker.ifttt.com/trigger/Arlo_button_pressed/with/key/byUSafkrFnuMT8pM65Mogc')
+    # print(f.read())
+
+
+
+
+    # root.after(5000, (urllib.request.urlopen('https://maker.ifttt.com/trigger/Arlo_button_pressed/with/key/byUSafkrFnuMT8pM65Mogc')))
+
     
-# Make button
+    # extArmingFlag = 'idle'
+
+    # secondsStart = int(str(datetime.datetime.now())[17:19])
+    # secondsEnd = int(str(datetime.datetime.now())[17:19])-1
+
+    # exitVar = 0
+    # while (exitVar == 0):
+    #     if (int(str(datetime.datetime.now())[17:19]) == secondsEnd):
+    #         f = urllib.request.urlopen('https://maker.ifttt.com/trigger/Arlo_button_pressed/with/key/byUSafkrFnuMT8pM65Mogc')
+    #         print(f.read())
+    #         exitVar = 1
+
+    # f = urllib.request.urlopen('https://maker.ifttt.com/trigger/Arlo_button_pressed/with/key/byUSafkrFnuMT8pM65Mogc')
+    # print(f.read())
+
+
+    # opener = urllib.FancyURLopener({})
+    # f = opener.open('https://maker.ifttt.com/trigger/Arlo_button_pressed/with/key/byUSafkrFnuMT8pM65Mogc')
+    # f.read()
+
+    # urllib.request.urlopen()
+
+
+# Make Arlo button (has to be after callArlo function is defined)
 arloImage = ImageTk.PhotoImage(Image.open(pathImg + 'arlo.png'))
-
-butt = Button(root, image = arloImage, command = callback, bg = 'black') #state=DISABLED)
+butt = Button(root, image = arloImage, command = callArlo, bg = 'black') 
 butt.place(x=815, y=345)
-
-
-
 
 # Any key release = event var.
 def closeApp(event):
