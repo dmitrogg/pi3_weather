@@ -12,6 +12,11 @@ from tkinter import *
 import urllib.request
 from PIL import Image, ImageTk
 
+#-----------------Notes------------------------------------
+# 1.Values are not rounded! Only truncated. Need to round.
+#
+#----------------------------------------------------------
+
 # Ajust path to files based on system
 if (platform.system() == 'Windows'):
     path = ''
@@ -36,15 +41,13 @@ if (platform.system() == 'Windows'):
     y1 = 0.225 # pi
 else:
     y1 = 0.275 # win
+    root.overrideredirect(1) # Disable window controls
 
 font = "Josefin Sans Light"
 font2 = "Forum"
 font3 = "Abel"
 
-
-# Values are not rounded! Only truncated. Need to round.
-
-#region BIG NUMBERS
+# region BIG NUMBERS
 # Big Temperature Number: Inside - Sensor
 sensorVarTemp = StringVar()
 sensorVarTemp.set('')
@@ -71,7 +74,7 @@ Label(root, text = "- Fremont -", font=(font3, 34), foreground='white', backgrou
 Label(root, text = "- San Fran -", font=(font3, 34), foreground='white', background='black').place(relx=x3, rely=0.075, anchor=CENTER)
 #endregion TOP ROW
 
-# region HUMIDITY AND WIND NUMBERS
+# region NUMBERS: HUMIDITY AND WIND NUMBERS
 # Humidity Number: Inside - Sensor
 sensorVarHumi = StringVar()
 sensorVarHumi.set('...')
@@ -103,9 +106,9 @@ webVarWindII = StringVar()
 webVarWindII.set('...')
 webVarWindLabelII = Label(root, textvariable = webVarWindII, font=(font3, 20), foreground='white', background='black')
 webVarWindLabelII.place(relx=x3+0.085, rely=0.425, anchor=CENTER)
-#endregion HUMIDITY AND WIND NUMBERS
+#endregion NUMBERS: HUMIDITY AND WIND NUMBERS
 
-# region HUMIDITY AND WIND ICONS
+# region ICONS: HUMIDITY AND WIND ICONS
 # Humidity Icons
 HumiImageOriginal = Image.open(pathImg + 'humi.png')
 HumiResized = HumiImageOriginal.resize((40, 43), Image.ANTIALIAS)
@@ -133,8 +136,9 @@ imageLabelWindImage.place(relx=x2+0.03, rely=0.425, anchor=CENTER)
 
 imageLabelWindImage = Label(root, image=WindImage, background='black')
 imageLabelWindImage.place(relx=x3+0.03, rely=0.425, anchor=CENTER)
-# endregion HUMIDITY AND WIND ICONS
+# endregion ICONS: HUMIDITY AND WIND ICONS
 
+# region BIG IMAGE AND DESCRIPTION
 # Setup big image size and place image
 originalImage = Image.open(pathImg + 'derp.jpg')
 resized = originalImage.resize((240, 180), Image.ANTIALIAS)
@@ -147,8 +151,9 @@ descTextVar = StringVar()
 descTextVar.set('Derping...')
 descTextVarLabel = Label(root, textvariable = descTextVar, font=(font3, 25), foreground='white', background='black', wraplength=500, justify=LEFT)
 descTextVarLabel.place(relx=0.30, rely=0.765, anchor=W)
+# endregion BIG IMAGE AND DESCRIPTION
 
-# Function: change big image
+# Function: Change big image
 def changeImage(newWebImageString):
     newImage = Image.open(newWebImageString)
     newResizedImage = newImage.resize((240, 180), Image.ANTIALIAS)
@@ -156,11 +161,10 @@ def changeImage(newWebImageString):
     imageLabelWeb.configure(image=image)
     imageLabelWeb.image = image
 
-
-# Get Web Data - Fremont
+# Function: Get Web Data
 def getWebData():
 
-    webURL = urllib.request.urlopen("https://darksky.net/forecast/37.5483,-121.9886/us12/en")
+    webURL = urllib.request.urlopen("https://darksky.net/forecast/37.5483,-121.9886/us12/en") #Fremont
     webTextCode = str(webURL.read())
     
     # Extract main block
@@ -235,11 +239,10 @@ def getWebData():
     else:
         extWebText = extWebText + str(snippetWebCast)
 
-
-# Get Web Data - City
+# Function: Get Web Data II
 def getWebDataII():
 
-    webURL = urllib.request.urlopen("https://darksky.net/forecast/37.7934,-122.3959/us12/en")
+    webURL = urllib.request.urlopen("https://darksky.net/forecast/37.7934,-122.3959/us12/en") #SanFran
     webTextCode = str(webURL.read())
     
     # Extract main block
@@ -317,8 +320,7 @@ def getWebDataII():
     else:
         extWebTextII = extWebTextII + str(snippetWebCast)
 
-
-# Get Sensor Data - Inside
+# Function: Get Sensor Data
 def getSensorData():
 
     # Ajust vars based on system
@@ -346,24 +348,26 @@ def getSensorData():
     global extSnsText
     extSnsText = '~ Inside ~' + "\n"
 
-
-# Fetch data from web and sensor
+# Update Web Data
 def LoopUpdateWebData():
     getWebData()
     randomTime = 120000 + (int(random.uniform(0, 60)) * 1000) # 120 seconds, 2 minutes
     root.after(randomTime, LoopUpdateWebData)
 
+# Update Web Data II
 def LoopUpdateWebDataII():
     getWebDataII()
     randomTimeII = 180000 + (int(random.uniform(0, 60)) * 1000) # 180 seconds, 3 minutes
     root.after(randomTimeII, LoopUpdateWebDataII)
 
+# Update Sensor Data
 def LoopUpdateSnsData():
     getSensorData()
     root.after(5000, LoopUpdateSnsData) # 5 seconds
 
 
-# Define conditions based on exfiltrated values
+
+# Define Conditions (based on exfiltrated values)
 def getStatus():
 
     # Meme conditions
@@ -407,13 +411,7 @@ def getStatus():
 
     return(inside, outside)
 
-
-# # Set global Arming flag
-# global extArmingFlag
-# extArmingFlag = 'idle'
-
-
-# Set Big Image and Description
+# Set Big Image (based on conditions)
 def LoopImage():
 
     inside, outside = getStatus()
@@ -448,7 +446,7 @@ def LoopImage():
 
     root.after(1000, LoopImage)
 
-
+# Set Description (based on conditions)
 def LoopDescription():
 
     inside, outside = getStatus()
@@ -486,6 +484,7 @@ def LoopDescription():
 
 
 
+# Arlo Module
 def callArlo():
 
     # global extArmingFlag
@@ -548,11 +547,12 @@ def callArlo():
 
     # urllib.request.urlopen()
 
-
 # Make Arlo button (has to be after callArlo function is defined)
 arloImage = ImageTk.PhotoImage(Image.open(pathImg + 'arlo.png'))
 butt = Button(root, image = arloImage, command = callArlo, bg = 'black') 
 butt.place(x=815, y=345)
+
+
 
 # Any key release = event var.
 def closeApp(event):
@@ -570,12 +570,17 @@ root.after(2000, LoopUpdateWebData)
 root.after(2000, LoopUpdateWebDataII)
 root.after(3000, LoopUpdateSnsData)
 
-# Ajust path to files based on system
-if (platform.system() == 'Windows'):
-    path = ''
-else:
-    # Disable window controls
-    root.overrideredirect(1)
+
+
+
+# # this has to be here at the bottom?
+# # Ajust path to files based on system
+# if (platform.system() == 'Windows'):
+#     path = ''
+# else:
+#     # Disable window controls
+#     root.overrideredirect(1)
+
 
 # Set window "always on top"
 root.call('wm', 'attributes', '.', '-topmost', True)
@@ -591,4 +596,3 @@ root.bind_all("<Button-1>", closeApp)
 
 # Start main tk loop
 root.mainloop()
-
